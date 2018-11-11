@@ -194,6 +194,11 @@ function fai_buy(id)
 					ai_buy(id,51) -- he grenade
 				end
 			end
+			if vai_set_botskill>1 then
+				if money>=200 and player(id,"team")==2 and vai_set_gm==0 then
+				ai_buy(id,56) -- make ct bots buy defuse kit on standard game mode
+				end
+			end
 			
 		elseif vai_smode[id]==3 then
 			-- ############################################################ Step 3: kevlar
@@ -207,7 +212,33 @@ function fai_buy(id)
 			
 		elseif vai_smode[id]==4 then
 			-- ############################################################ Step 4: secondary weapon
-			-- don't buy secondary
+			local weapons=playerweapons(id)
+			local haspistol=false
+			
+			for i=1,#weapons do
+				if weapons[i]>=3 and weapons[i]<=6 then
+					haspistol=true -- we already have a non-default pistol, no need to buy another.
+					break
+				end
+			end
+			
+			-- force buy
+			if money<=1000 then
+				eb=math.random(0,7) -- lower chance to force buy
+				if eb== 0 then ai_buy(id,3) end
+				if eb== 1 then ai_buy(id,4) end
+				if eb== 2 then ai_buy(id,5) end
+				if eb== 3 then ai_buy(id,6) end
+			end
+			
+			-- standard buy
+			if money>=4500 and haspistol==false then
+				r=math.random(0,5)
+				if r== 0 then ai_buy(id,3) end
+				if r== 1 then ai_buy(id,4) end
+				if r== 2 then ai_buy(id,5) end
+				if r== 3 then ai_buy(id,6) end
+			end
 			
 		elseif vai_smode[id]==5 then
 			-- ############################################################ Step 5: switch weapon to knife if available

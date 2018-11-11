@@ -62,6 +62,38 @@ function fai_collect(id)
 						elseif itype>=64 and itype<=65 and player(id,"health")<player(id,"maxhealth") then
 							-- Health
 							collect=true
+							-- BEGIN armor
+						elseif itype>=57 or itype<=58 and player(id,"armor")<100 then
+							-- Armor (kevlar)
+							collect=true
+						elseif itype>=79 and player(id,"armor")<=100 then
+							-- Armor (light)
+							collect=true
+						elseif itype>=80 and player(id,"armor")<=201 then
+							-- Armor (medium)
+							collect=true
+						elseif itype>=81 and player(id,"armor")<=202 then
+							-- Armor (heavy)
+							collect=true
+						elseif itype>=82 and player(id,"armor")<=203 then
+							-- Armor (medic)
+							collect=true
+						elseif itype>=83 and player(id,"armor")<=204 then
+							-- Armor (super)
+							collect=true
+						elseif itype>=84 and player(id,"armor")<=100 then -- only pick up stealth armor if we don't have any special armor.
+							-- Armor (stealth)
+							collect=true
+							-- END armor
+						elseif itype==56 and player(id,"defusekit")==false then
+							collect=true
+							-- Collect defuse kit
+						elseif itype==59 and player(id,"nightvision")==false then
+							collect=true
+							-- Collect night vision
+						elseif itype==60 and player(id,"gasmask")==false then
+							collect=true
+							-- Collect gas mask
 						end
 					end
 					
