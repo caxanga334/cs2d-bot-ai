@@ -85,7 +85,7 @@ function fai_collect(id)
 							-- Armor (stealth)
 							collect=true
 							-- END armor
-						elseif itype==56 and player(id,"defusekit")==false then
+						elseif itype==56 and player(id,"defusekit")==false and player(id,"team")==2 then -- only cts should collect defuse kits
 							collect=true
 							-- Collect defuse kit
 						elseif itype==59 and player(id,"nightvision")==false then
