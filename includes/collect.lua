@@ -62,31 +62,31 @@ function fai_collect(id)
 						elseif itype>=64 and itype<=65 and player(id,"health")<player(id,"maxhealth") then
 							-- Health
 							collect=true
-							-- armor code is broken and causes bugs.
-						-- elseif itype>=57 and player(id,"armor")<65 then
-							-- -- Armor (kevlar)
-							-- collect=true
-						-- elseif itype<=58 and player(id,"armor")<100 then
-							-- -- Armor (kevlar+helm)
-							-- collect=true
-						-- elseif itype>=79 and player(id,"armor")<=100 then
-							-- -- Armor (light)
-							-- collect=true
-						-- elseif itype>=80 and player(id,"armor")<=201 then
-							-- -- Armor (medium)
-							-- collect=true
-						-- elseif itype>=81 and player(id,"armor")<=202 then
-							-- -- Armor (heavy)
-							-- collect=true
-						-- elseif itype>=82 and player(id,"armor")<=203 then
-							-- -- Armor (medic)
-							-- collect=true
-						-- elseif itype>=83 and player(id,"armor")<=204 then
-							-- -- Armor (super)
-							-- collect=true
-						-- elseif itype>=84 and player(id,"armor")<=100 then -- only pick up stealth armor if we don't have any special armor.
-							-- -- Armor (stealth)
-							-- collect=true
+							armor code is broken and causes bugs.
+						elseif itype==57 and player(id,"armor")<65 then
+							-- Armor (kevlar)
+							collect=true
+						elseif itype==58 and player(id,"armor")<100 then
+							-- Armor (kevlar+helm)
+							collect=true
+						elseif itype==79 and player(id,"armor")<=100 then
+							-- Armor (light)
+							collect=true
+						elseif itype==80 and player(id,"armor")<=201 then
+							-- Armor (medium)
+							collect=true
+						elseif itype==81 and player(id,"armor")<=202 then
+							-- Armor (heavy)
+							collect=true
+						elseif itype==82 and player(id,"armor")<=203 then
+							-- Armor (medic)
+							collect=true
+						elseif itype==83 and player(id,"armor")<=204 then
+							-- Armor (super)
+							collect=true
+						elseif itype==84 and player(id,"armor")<=100 then -- only pick up stealth armor if we don't have any special armor.
+							-- Armor (stealth)
+							collect=true
 						elseif itype==56 and player(id,"defusekit")==false and player(id,"team")==2 then -- only cts should collect defuse kits
 							-- Collect defuse kit
 							collect=true
