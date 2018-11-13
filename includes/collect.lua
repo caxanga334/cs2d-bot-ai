@@ -62,7 +62,6 @@ function fai_collect(id)
 						elseif itype>=64 and itype<=65 and player(id,"health")<player(id,"maxhealth") then
 							-- Health
 							collect=true
-							armor code is broken and causes bugs.
 						elseif itype==57 and player(id,"armor")<65 then
 							-- Armor (kevlar)
 							collect=true
