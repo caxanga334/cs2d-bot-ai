@@ -50,7 +50,16 @@ function fai_collect(id)
 							if player(id,"team")==1 then
 								collect=true
 							end
+						elseif itype==77 and not fai_contains(playerweapons(id),77) and player(id,"team")~=3 then
+							collect=true -- collect mines
+						elseif itype==87 and not fai_contains(playerweapons(id),87) and player(id,"team")~=3 then
+							collect=true -- collect laser mines
 						end
+					elseif slot==6 then
+						-- ??
+						if not fai_contains(playerweapons(id),itype) and player(id,"team")~=3 then
+							collect=true
+						end					
 					elseif slot==0 then
 						-- No Slot Items
 						if itype==70 or itype==71 then

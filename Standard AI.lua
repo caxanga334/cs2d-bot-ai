@@ -17,6 +17,7 @@ dofile("bots/includes/buy.lua")			-- buying
 dofile("bots/includes/decide.lua")		-- decision making process
 dofile("bots/includes/engage.lua")		-- engage/attack/battle (find target and attack)
 dofile("bots/includes/fight.lua")		-- fight (attack if target is set)
+dofile("bots/includes/fight_npc.lua")	-- fight (attack if target is set)
 dofile("bots/includes/follow.lua")		-- follow another player
 dofile("bots/includes/collect.lua")		-- collect good nearby items
 dofile("bots/includes/radio.lua")		-- radio message handling
@@ -36,7 +37,9 @@ vai_timer={}							-- timer
 vai_destx={}; vai_desty={}				-- destination x|y
 vai_aimx={}; vai_aimy={}				-- aim at x|y
 vai_px={}; vai_py={}					-- previous x|y
+vai_npcx={}; vai_npcy={}				-- target npc x|y
 vai_target={}							-- target
+vai_targetnpc={}						-- target (NPC)
 vai_reaim={}; vai_rescan={}				-- re-aim / re-scan (line of fire checks)
 vai_itemscan={}							-- item scan countdown (for collecting items)
 vai_buyingdone={}						-- buying done?
@@ -48,7 +51,9 @@ for i=1,32 do
 	vai_destx[i]=0; vai_desty[i]=0
 	vai_aimx[i]=0; vai_aimy[i]=0
 	vai_px[i]=0; vai_px[i]=0
-	vai_target[i]=0 
+	vai_npcx[i]=0; vai_npcy[i]=0
+	vai_target[i]=0
+	vai_targetnpc[i]=0
 	vai_reaim[i]=0; vai_rescan[i]=0
 	vai_itemscan[i]=0
 	vai_buyingdone[i]=0
@@ -71,6 +76,7 @@ function ai_onspawn(id)
 	vai_px[id]=player(id,"x")
 	vai_py[id]=player(id,"y")
 	vai_target[id]=0
+	vai_targetnpc[id]=0;
 	vai_reaim[id]=0; vai_rescan[id]=0
 	vai_itemscan[id]=1000
 	vai_buyingdone[id]=0
@@ -188,6 +194,10 @@ function ai_update_living(id)
 		if player(id,"ai_flash")==0 then
 			vai_mode[id]=0
 		end
+		
+	elseif vai_mode[id]==9 then
+		-- ############################################################ 9: FIGHT NPC -> attack an NPC
+		fai_fightnpc(id)
 	
 	elseif vai_mode[id]==50 then
 		-- ############################################################ 50: RESCUE -> rescue hostages

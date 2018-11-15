@@ -9,7 +9,25 @@ function fai_engage(id)
 		if player(id,"ai_flash")==0 then
 			-- Not flashed!
 			vai_target[id]=ai_findtarget(id)
-			if vai_target[id]>0 then
+			if vai_target[id]==0 then -- NPC scan
+				local px=player(id,"x")
+				local py=player(id,"y")
+				local co=closeobjects(px,py,160,30) -- this returns all ids of npcs in a 160 pixels radius, hopefully the first id will be the nearest object
+				for i=1,#co do
+					local sox=object(i,"x")
+					local soy=object(i,"y")
+					if math.abs(px-sox)<315 and math.abs(py-soy)<235 then
+						vai_targetnpc[id]=i
+						vai_npcx[id]=object(i,"x")
+						vai_npcx[id]=object(i,"y")
+					else
+						vai_targetnpc[id]=0
+						vai_npcx[id]=0
+						vai_npcx[id]=0
+					end
+				end
+			end
+			if vai_target[id]>0 or vai_targetnpc[id]>0 then
 				vai_rescan[id]=0
 			end
 		else
@@ -57,6 +75,20 @@ function fai_engage(id)
 			end
 		end
 	end
+	if vai_targetnpc[id]>0 then
+		if not object(vai_targetnpc[id],"exists") then
+			-- target npc does not exists anymore
+			vai_targetnpc[id]=0
+		else
+			if object(vai_targetnpc[id],"health")>0 then
+				if not ai_freeline(id,object(vai_targetnpc[id],"x"),object(vai_targetnpc[id],"y")) then
+					vai_targetnpc[id]=0
+				end
+			else
+				vai_targetnpc[id]=0
+			end
+		end
+	end
 	
 	-- ############################################################ Aim
 	if vai_target[id]>0 then
@@ -69,6 +101,16 @@ function fai_engage(id)
 			vai_mode[id]=4
 		end
 	end
+	if vai_targetnpc[id]>0 and vai_target[id]==0 then -- do not aim at NPCs if we spotted a player
+		vai_aimx[id]=object(vai_targetnpc[id],"x")
+		vai_aimy[id]=object(vai_targetnpc[id],"y")
+		-- Switch to fight mode
+		if vai_mode[id]~=9 then
+			vai_timer[id]=math.random(25,100)
+			vai_smode[id]=math.random(0,360)
+			vai_mode[id]=9
+		end
+	end
 	ai_aim(id,vai_aimx[id],vai_aimy[id])
 	
 	-- ############################################################ Attack
@@ -76,6 +118,11 @@ function fai_engage(id)
 		-- Right Direction?
 		if math.abs(fai_angledelta(tonumber(player(id,"rot")),fai_angleto(player(id,"x"),player(id,"y"),player(vai_target[id],"x"),player(vai_target[id],"y"))))<20 then
 			-- Do an "intelligent" attack (this includes automatic weapon selection and reloading)
+			ai_iattack(id)
+		end
+	end
+	if vai_targetnpc[id]>0 then
+		if math.abs(fai_angledelta(tonumber(player(id,"rot")),fai_angleto(player(id,"x"),player(id,"y"),object(vai_targetnpc[id],"x"),object(vai_targetnpc[id],"y"))))<20 then
 			ai_iattack(id)
 		end
 	end
