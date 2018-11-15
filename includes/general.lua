@@ -114,13 +114,37 @@ end
 -- Set destination to random adjacent tile
 function fai_randomadjacent(id)
 	px=player(id,"tilex")
-	py=player(id,"tilex")
+	py=player(id,"tiley")
 	
 	-- 20 Search attempts
 	for i=1,20 do
 		-- Get coordinates of random adjacend tile
 		x=px+math.random(-1,1)
 		y=py+math.random(-1,1)
+		
+		-- It must not be the tile of the player...
+		if (x~=px or y~=py) then
+			-- ... and it must be walkable
+			if tile(x,y,"walkable") then
+				-- If all this is true, set it!
+				vai_destx[id]=x
+				vai_desty[id]=y
+				return
+			end
+		end
+	end
+end
+
+-- Set destination to random adjacent tile (entire map version)
+function fai_randommaptile(id)
+	px=player(id,"tilex")
+	py=player(id,"tiley")
+	
+	-- 40 Search attempts
+	for i=1,40 do
+		-- Get coordinates of random adjacend tile
+		x=math.random(0,map("xsize"))
+		y=math.random(0,map("ysize"))
 		
 		-- It must not be the tile of the player...
 		if (x~=px or y~=py) then

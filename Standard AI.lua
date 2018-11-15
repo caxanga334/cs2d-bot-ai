@@ -23,10 +23,12 @@ dofile("bots/includes/collect.lua")		-- collect good nearby items
 dofile("bots/includes/radio.lua")		-- radio message handling
 dofile("bots/includes/bomb.lua")		-- bomb planting and defusing
 dofile("bots/includes/hostages.lua")	-- rescue hostages
+dofile("bots/includes/buildwhere.lua")  -- decides where the bot will build
+dofile("bots/includes/build.lua")  		-- decides what the bot will build
 
 -- Setting Cache
 vai_set_gm=0							-- Game Mode Setting (equals "sv_gamemode", Cache)
-vai_set_botskill=0						-- Bot Skill Setting (equals "bot_skill", Cache)
+vai_set_botskill=0						-- Bot Skill Setting (equals "bot_skill", Cache) -- 0: very low, 1: low, 2: normal, 3: advanced, 4: professional
 vai_set_botweapons=0					-- Bot Weapons Setting (equals "bot_weapons", Cache)
 vai_set_debug=0							-- Debug Setting (equals "debugai", Cache)
 fai_update_settings()
@@ -210,6 +212,24 @@ function ai_update_living(id)
 	elseif vai_mode[id]==52 then
 		-- ############################################################ 52: DEFUSE -> defuse bomb
 		fai_defuse(id)
+		
+	elseif vai_mode[id]==60 then
+		-- ############################################################ 60: BUILDTARGET -> search for a place to build
+		fai_findbuildspot(id)
+	elseif vai_mode[id]==61 then
+		-- ############################################################ 61: BUILDGOTO -> go to the place to build
+		local result=ai_goto(id,vai_destx[id],vai_desty[id])
+		if result==1 then -- bot arrived to destination
+			vai_mode[id]=62
+		elseif result==0 then -- failed to find path
+			vai_mode[id]=0
+		else
+			fai_walkaim(id)
+		end
+		
+	elseif vai_mode[id]==62 then
+		-- ############################################################ 62: BUILD -> build something
+		fai_build(id)
 	
 	elseif vai_mode[id]==-1 then
 		-- ############################################################ -1: BUY -> buy equipment

@@ -285,7 +285,7 @@ function fai_decide(id)
 			if team==1 then
 				------------------- Terrorists
 				local r=math.random(1,3)
-				if r<=2 then
+				if r==2 then
 					-- Goto CT Spawn / Botnode
 					if map("botnodes")>0 and math.random(0,2)==1 then
 						vai_destx[id],vai_desty[id]=randomentity(19) -- info_botnode
@@ -294,6 +294,9 @@ function fai_decide(id)
 						vai_destx[id],vai_desty[id]=randomentity(1) -- info_ct
 						vai_mode[id]=2
 					end
+				elseif r==3 then
+					fai_randommaptile(id)
+					vai_mode[id]=2
 				else
 					-- Goto T Spawn
 					vai_destx[id],vai_desty[id]=randomentity(0) -- info_t
@@ -302,7 +305,7 @@ function fai_decide(id)
 			else
 				------------------- Counter-Terrorists
 				local r=math.random(1,3)
-				if r<=2 then
+				if r==2 then
 					-- Goto T Spawn / Botnode
 					if map("botnodes")>0 and math.random(0,2)==1 then
 						vai_destx[id],vai_desty[id]=randomentity(19) -- info_botnode
@@ -311,6 +314,9 @@ function fai_decide(id)
 						vai_destx[id],vai_desty[id]=randomentity(0) -- info_t
 						vai_mode[id]=2
 					end
+				elseif r==3 then
+					fai_randommaptile(id)
+					vai_mode[id]=2
 				else
 					-- Goto CT Spawn
 					vai_destx[id],vai_desty[id]=randomentity(1) -- info_ct
@@ -320,6 +326,19 @@ function fai_decide(id)
 		
 		end
 		
+	end
+	
+	-- BUILD 
+	-- Bots with wrench will build at random places
+	if fai_contains(playerweapons(id),74) then -- check if bot contains a wrench
+		local rng1=math.random(1,100) -- make it random
+		if vai_set_botskill>=2 then -- bots on low or very low will never build
+			if rng1>=40 then
+				vai_destx[id]=0
+				vai_desty[id]=0
+				vai_mode[id]=60
+			end
+		end
 	end
 	
 	-- Check Decision Results
