@@ -8,12 +8,6 @@ function fai_build(id)
 	local bx=px+rx
 	local by=py+ry
 
-	while bx==px then -- these loops prevents the bots trying to build at themselves 
-		bx=px+rx
-	end
-	while by==py then
-		by=py+ry
-	end
 	ai_selectweapon(id,74)
 	if rb==1 then
 		ai_build(id,5,bx,by) -- Wall 3

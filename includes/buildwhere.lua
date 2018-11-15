@@ -48,12 +48,18 @@ function fai_findbuildspot(id)
 				vai_smode[id]=1
 			end
 		elseif r==2 then -- BOT NODE
-			if map("botnodes")>0 then
+			if map("botnodes")>0 and math.random(1,2)==1 then
 				vai_destx[id],vai_desty[id]=randomentity(19) -- info_botnode
 				vai_destx[id]=vai_destx[id]+buildx
 				vai_desty[id]=vai_desty[id]+buildy
 				vai_mode[id]=61
 				vai_smode[id]=2
+			elseif math.random(1,10)>=4 then
+				vai_destx[id],vai_desty[id]=randomentity(0) -- info_t
+				vai_destx[id]=vai_destx[id]+buildx
+				vai_desty[id]=vai_desty[id]+buildy
+				vai_mode[id]=61
+				vai_smode[id]=1
 			else
 				fai_randommaptile(id) -- select a random tile around the map
 				vai_mode[id]=61
@@ -75,51 +81,50 @@ function fai_findbuildspot(id)
 				vai_desty[id]=vai_desty[id]+buildy
 				vai_mode[id]=61
 				vai_smode[id]=1
-				print("build at: escape point")
 			elseif map("mission_hostages")>0 then
 				vai_destx[id],vai_desty[id]=randomentity(4) -- info_rescuepoint
 				vai_destx[id]=vai_destx[id]+buildx
 				vai_desty[id]=vai_desty[id]+buildy
 				vai_mode[id]=61
 				vai_smode[id]=1
-				print("build at: rescue point")
 			elseif map("mission_bombspots")>0 then
 				vai_destx[id],vai_desty[id]=randomentity(5) -- info_bombspot
 				vai_destx[id]=vai_destx[id]+buildx
 				vai_desty[id]=vai_desty[id]+buildy
 				vai_mode[id]=61
 				vai_smode[id]=1
-				print("build at: bombspot")
 			elseif map("mission_ctfflags")>0 then
 				vai_destx[id],vai_desty[id]=randomentity(15,0,2) -- info_ctf_flag
 				vai_destx[id]=vai_destx[id]+buildx
 				vai_desty[id]=vai_desty[id]+buildy
 				vai_mode[id]=61
 				vai_smode[id]=1
-				print("build at: ctf flag")
 			elseif map("mission_dompoints")>0 then
 				vai_destx[id],vai_desty[id]=randomentity(17,0,2) -- info_dom_point
 				vai_destx[id]=vai_destx[id]+buildx
 				vai_desty[id]=vai_desty[id]+buildy
 				vai_mode[id]=61
 				vai_smode[id]=1
-				print("build at: dom point")
 			else
 				vai_destx[id],vai_desty[id]=randomentity(1) -- info_ct
 				vai_destx[id]=vai_destx[id]+buildx
 				vai_desty[id]=vai_desty[id]+buildy
 				vai_mode[id]=61
 				vai_smode[id]=1
-				print("build at: ct spawn")
 			end
 		elseif r==2 then -- BOT NODE
-			if map("botnodes")>0 then
+			if map("botnodes")>0 and math.random(1,2)==1 then
 				vai_destx[id],vai_desty[id]=randomentity(19) -- info_botnode
 				vai_destx[id]=vai_destx[id]+buildx
 				vai_desty[id]=vai_desty[id]+buildy
 				vai_mode[id]=61
 				vai_smode[id]=2
-				print("build at: bot node")
+			elseif math.random(1,10)>=4 then
+				vai_destx[id],vai_desty[id]=randomentity(1) -- info_ct
+				vai_destx[id]=vai_destx[id]+buildx
+				vai_desty[id]=vai_desty[id]+buildy
+				vai_mode[id]=61
+				vai_smode[id]=1
 			else
 				fai_randommaptile(id) -- select a random tile around the map
 				vai_mode[id]=61
