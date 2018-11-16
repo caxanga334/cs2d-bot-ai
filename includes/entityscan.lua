@@ -55,5 +55,5 @@ function fai_usentity(id)
 	ai_use(id)
 	vai_mode[id]=0
 	vai_smode[id]=0
-	vai_entityscan[id]=3000 -- increase scan time to avoid getting stuck pressing the same button
+	vai_entityscan[id]=1500 -- increase scan time to avoid getting stuck pressing the same button
 end
