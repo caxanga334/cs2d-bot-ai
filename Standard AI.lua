@@ -26,6 +26,7 @@ dofile("bots/includes/bomb.lua")		-- bomb planting and defusing
 dofile("bots/includes/hostages.lua")	-- rescue hostages
 dofile("bots/includes/buildwhere.lua")  -- decides where the bot will build
 dofile("bots/includes/build.lua")  		-- decides what the bot will build
+dofile("bots/includes/entityscan.lua")  -- scans and interacts with nearby entities
 
 -- Setting Cache
 vai_set_gm=0							-- Game Mode Setting (equals "sv_gamemode", Cache)
@@ -47,6 +48,7 @@ vai_targetnpc={}						-- target (NPC)
 vai_targetobj={}						-- target (Building)
 vai_reaim={}; vai_rescan={}				-- re-aim / re-scan (line of fire checks)
 vai_itemscan={}							-- item scan countdown (for collecting items)
+vai_entityscan={}						-- entity scan countdown (for interacting with entities)
 vai_buyingdone={}						-- buying done?
 vai_radioanswer={}						-- radio answer?
 vai_radioanswert={}						-- radio answer timer
@@ -63,6 +65,7 @@ for i=1,32 do
 	vai_targetobj[i]=0
 	vai_reaim[i]=0; vai_rescan[i]=0
 	vai_itemscan[i]=0
+	vai_entityscan[i]=0
 	vai_buyingdone[i]=0
 	vai_radioanswer[i]=0; vai_radioanswert[i]=0
 end
@@ -89,6 +92,7 @@ function ai_onspawn(id)
 	vai_targetobj[id]=0
 	vai_reaim[id]=0; vai_rescan[id]=0
 	vai_itemscan[id]=1000
+	vai_entityscan[id]=600
 	vai_buyingdone[id]=0
 	vai_radioanswer[id]=0; vai_radioanswert[id]=0;
 end
@@ -122,10 +126,12 @@ function ai_update_living(id)
 		
 	-- Collect nearby items
 	fai_collect(id)
+	-- Scan surroundings for entities of interest
+	fai_scanforentity(id)
 	
 	-- Set AI Debug Output (only visible if CS2D setting "debugai" is set to 1)
 	if vai_set_debug then
-		ai_debug(id,"m:"..vai_mode[id]..", sm:"..vai_smode[id].." ta:"..vai_target[id].." ti:"..vai_timer[id])
+		ai_debug(id,"m:"..vai_mode[id]..", sm:"..vai_smode[id].." ta:"..vai_target[id].." ti:"..vai_timer[id]..", es:"..vai_entityscan[id])
 	end
 	
 	-- The AI is basically a state machine
@@ -211,6 +217,18 @@ function ai_update_living(id)
 	elseif vai_mode[id]==10 then
 		-- ############################################################ 10: FIGHT BUILDING -> attack a building
 		fai_fightbuilding(id)
+		
+	elseif vai_mode[id]==20 then
+		-- ############################################################ 20: INTERACT -> interact with an entity
+		local result=ai_goto(id,vai_destx[id],vai_desty[id])
+		if result==1 then -- bot arrived to destination
+			fai_usentity(id)
+		elseif result==0 then -- failed to find path
+			vai_entityscan[id]=4500
+			vai_mode[id]=0
+		else
+			fai_walkaim(id)
+		end
 	
 	elseif vai_mode[id]==50 then
 		-- ############################################################ 50: RESCUE -> rescue hostages

@@ -45,7 +45,7 @@ function fai_findbuildspot(id)
 				vai_destx[id]=vai_destx[id]+buildx
 				vai_desty[id]=vai_desty[id]+buildy
 				vai_mode[id]=61
-				vai_smode[id]=4
+				vai_smode[id]=4 -- this will make bots build tele entrance instead of tele exit
 			end
 		elseif r==2 then -- BOT NODE
 			if map("botnodes")>0 and math.random(1,2)==1 then
