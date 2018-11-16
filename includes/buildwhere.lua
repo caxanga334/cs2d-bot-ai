@@ -45,7 +45,7 @@ function fai_findbuildspot(id)
 				vai_destx[id]=vai_destx[id]+buildx
 				vai_desty[id]=vai_desty[id]+buildy
 				vai_mode[id]=61
-				vai_smode[id]=1
+				vai_smode[id]=4
 			end
 		elseif r==2 then -- BOT NODE
 			if map("botnodes")>0 and math.random(1,2)==1 then
@@ -59,7 +59,7 @@ function fai_findbuildspot(id)
 				vai_destx[id]=vai_destx[id]+buildx
 				vai_desty[id]=vai_desty[id]+buildy
 				vai_mode[id]=61
-				vai_smode[id]=1
+				vai_smode[id]=4
 			else
 				fai_randommaptile(id) -- select a random tile around the map
 				vai_mode[id]=61
@@ -110,7 +110,7 @@ function fai_findbuildspot(id)
 				vai_destx[id]=vai_destx[id]+buildx
 				vai_desty[id]=vai_desty[id]+buildy
 				vai_mode[id]=61
-				vai_smode[id]=1
+				vai_smode[id]=4
 			end
 		elseif r==2 then -- BOT NODE
 			if map("botnodes")>0 and math.random(1,2)==1 then
@@ -124,18 +124,16 @@ function fai_findbuildspot(id)
 				vai_destx[id]=vai_destx[id]+buildx
 				vai_desty[id]=vai_desty[id]+buildy
 				vai_mode[id]=61
-				vai_smode[id]=1
+				vai_smode[id]=4
 			else
 				fai_randommaptile(id) -- select a random tile around the map
 				vai_mode[id]=61
 				vai_smode[id]=3
-				print("build at: random")
 			end
 		else
 			fai_randommaptile(id) -- select a random tile around the map
 			vai_mode[id]=61
 			vai_smode[id]=3
-			print("build at: random")
 		end
 	end
 	
@@ -143,6 +141,8 @@ function fai_findbuildspot(id)
 	if not tile(vai_destx[id],vai_desty[id], "walkable") then
 		vai_mode[id]=0
 		vai_smode[id]=0
-		print("build spot not walkable")
+		if vai_set_debug==1 then
+			print("build spot not walkable")
+		end
 	end
 end
