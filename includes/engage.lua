@@ -2,6 +2,7 @@
 -- Engage Enemies
 function fai_engage(id)
 
+	local objectscan=1
 	-- ############################################################ Find Target
 	vai_reaim[id]=vai_reaim[id]-1
 	if vai_reaim[id]<0 then
@@ -9,50 +10,7 @@ function fai_engage(id)
 		if player(id,"ai_flash")==0 then
 			-- Not flashed!
 			vai_target[id]=ai_findtarget(id)
-			if vai_target[id]==0 then -- NPC scan
-				local px=player(id,"x")
-				local py=player(id,"y")
-				local co=closeobjects(px,py,160,30) -- this returns all ids of npcs in a 160 pixels radius
-				for i=1,#co do
-					local sox=object(i,"x")
-					local soy=object(i,"y")
-					if math.abs(px-sox)<315 and math.abs(py-soy)<235 then
-						vai_targetnpc[id]=i
-						vai_npcx[id]=object(i,"x")
-						vai_npcy[id]=object(i,"y")
-					else
-						vai_targetnpc[id]=0
-						vai_npcx[id]=0
-						vai_npcy[id]=0
-					end
-				end
-			end
-			if vai_target[id]==0 then -- BUILDING scan
-				local px=player(id,"x")
-				local py=player(id,"y")
-				local plrteam=player(id,"team")
-				local building=closeobjects(px,py,160) -- buildings have multiple IDs, we will filter them later
-				for i=1,#building do
-					local obx=object(i,"x")
-					local oby=object(i,"y")
-					local objtype=object(i,"type")
-					local objteam=object(i,"team")
-					if objteam~=plrteam then -- team check
-						if objtype>=3 and objtype<=12 or objtype==15 then
-							if math.abs(px-obx)<315 and math.abs(py-oby)<235 then --distance check, is this really needed?
-								vai_targetobj[id]=i
-								vai_objx[id]=obx
-								vai_objy[id]=oby
-							else
-								vai_targetobj[id]=0
-								vai_objx[id]=0
-								vai_objy[id]=0
-							end
-						end
-					end
-				end
-			end
-			if vai_target[id]>0 or vai_targetnpc[id]>0 then
+			if vai_target[id]>0 then
 				vai_rescan[id]=0
 			end
 		else
@@ -61,6 +19,75 @@ function fai_engage(id)
 			if vai_mode[id]~=8 then
 				vai_mode[id]=8
 				fai_randomadjacent(id)
+			end
+		end
+		if objectscan==1 then -- NPC scan
+			local co=closeobjects(player(id,"x"),player(id,"y"),224,30) -- this returns all ids of npcs in a 224 pixels radius
+			if #co~=0 then
+				for i=1,#co do
+					if object(i,"exist")==true then
+						if math.abs(player(id,"x")-object(i,"x"))<315 and math.abs(player(id,"y")-object(i,"y"))<235 then
+							vai_targetnpc[id]=i
+							vai_npcx[id]=object(i,"x")
+							vai_npcy[id]=object(i,"y")
+						else
+							vai_targetnpc[id]=0
+							vai_npcx[id]=0
+							vai_npcy[id]=0
+						end
+					end
+				end
+			end
+		end
+		if objectscan==1 then -- BUILDING scan
+			local px=player(id,"x")
+			local py=player(id,"y")
+			local plrteam=player(id,"team")
+			local building=closeobjects(px,py,224) -- buildings have multiple IDs, we will filter them later
+			if #building~=0 then
+				for i=1,#building do
+					if object(i,"exist")==true then
+						local obx=object(i,"x")
+						local oby=object(i,"y")
+						local objtype=object(i,"type")
+						local objteam=object(i,"team")
+						local helpx=0
+						local helpy=0
+						-- target helper
+						if ((py-oby)^2>(px-obx)^2) then
+							helpx=16
+						else
+							if (px-obx)>0 then
+								helpx=35
+							elseif (px-obx)<0 then
+								helpx=-3
+							end
+						end
+						if ((px-obx)^2>(py-oby)^2) then
+							helpy=16
+						else
+							if (py-oby)>0 then
+								helpy=35
+							elseif (py-oby)<0 then
+								helpy=-3
+							end
+						end
+						-- end target helper
+						if objteam~=plrteam then -- team check
+							if objtype>=3 and objtype<=12 or objtype==15 then
+								if math.abs(px-obx)<315 and math.abs(py-oby)<235 then --distance check, is this really needed?
+									vai_targetobj[id]=i
+									vai_objx[id]=obx+helpx
+									vai_objy[id]=oby+helpy
+								else
+									vai_targetobj[id]=0
+									vai_objx[id]=0
+									vai_objy[id]=0
+								end
+							end
+						end
+					end
+				end
 			end
 		end
 	end
@@ -99,8 +126,7 @@ function fai_engage(id)
 				vai_target[id]=0
 			end
 		end
-	end
-	if vai_targetnpc[id]>0 then
+	elseif vai_targetnpc[id]>0 then
 		if not object(vai_targetnpc[id],"exists") then
 			-- target npc does not exists anymore
 			vai_targetnpc[id]=0
@@ -113,8 +139,7 @@ function fai_engage(id)
 				vai_targetnpc[id]=0
 			end
 		end
-	end
-	if vai_targetobj[id]>0 then
+	elseif vai_targetobj[id]>0 then
 		if not object(vai_targetobj[id],"exists") then
 			-- target building does not exists anymore
 			vai_targetobj[id]=0
@@ -139,27 +164,26 @@ function fai_engage(id)
 			vai_smode[id]=math.random(0,360)
 			vai_mode[id]=4
 		end
-	end
-	if vai_targetnpc[id]>0 and vai_target[id]==0 then -- do not aim at NPCs if we spotted a player
+	elseif vai_targetnpc[id]>0 then
 		vai_aimx[id]=object(vai_targetnpc[id],"x")
 		vai_aimy[id]=object(vai_targetnpc[id],"y")
 		-- Switch to fight mode
-		if vai_mode[id]~=9 then
+		if vai_mode[id]~=9 and vai_mode[id]~=4 and vai_mode[id]~=5 then
 			vai_timer[id]=math.random(25,100)
 			vai_smode[id]=math.random(0,360)
 			vai_mode[id]=9
 		end
-	end
-	if vai_targetobj[id]>0 and vai_target[id]==0 then -- do not aim at objects if we spotted a player
-		vai_aimx[id]=object(vai_targetobj[id],"tilex")*32+16
-		vai_aimy[id]=object(vai_targetobj[id],"tiley")*32+16
+	elseif vai_targetobj[id]>0 then
+		vai_aimx[id]=vai_objx[id]
+		vai_aimy[id]=vai_objy[id]
 		-- Switch to fight mode
-		if vai_mode[id]~=10 then
+		if vai_mode[id]~=10 and vai_mode[id]~=9 and vai_mode[id]~=4 and vai_mode[id]~=5 then
 			vai_timer[id]=math.random(25,100)
 			vai_smode[id]=math.random(0,360)
 			vai_mode[id]=10
 		end
 	end
+
 	ai_aim(id,vai_aimx[id],vai_aimy[id])
 	
 	-- ############################################################ Attack
@@ -169,16 +193,13 @@ function fai_engage(id)
 			-- Do an "intelligent" attack (this includes automatic weapon selection and reloading)
 			ai_iattack(id)
 		end
-	end
-	if vai_targetnpc[id]>0 then
+	elseif vai_targetnpc[id]>0 then
 		if math.abs(fai_angledelta(tonumber(player(id,"rot")),fai_angleto(player(id,"x"),player(id,"y"),object(vai_targetnpc[id],"x"),object(vai_targetnpc[id],"y"))))<20 then
 			ai_iattack(id)
 		end
-	end
-	if vai_targetobj[id]>0 then
-		if math.abs(fai_angledelta(tonumber(player(id,"rot")),fai_angleto(player(id,"x"),player(id,"y"),object(vai_targetobj[id],"tilex")*32+16,object(vai_targetobj[id],"tiley")*32+16)))<20 then
+	elseif vai_targetobj[id]>0 then
+		if math.abs(fai_angledelta(tonumber(player(id,"rot")),fai_angleto(player(id,"x"),player(id,"y"),vai_objx[id],vai_objx[id])))<20 then
 			ai_iattack(id)
 		end
 	end
-
 end

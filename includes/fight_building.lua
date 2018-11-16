@@ -5,12 +5,12 @@ function fai_fightbuilding(id)
 	if object(vai_targetobj[id],"exists") then
 		if object(vai_targetobj[id],"health")>0 then
 			-- Melee Combat?
-			if itemtype(player(id,"weapontype"),"range")<50 then
-				-- Yes, melee! Run to target
-				if ai_goto(id,object(vai_targetobj[id],"tilex"),object(vai_targetobj[id],"tiley"))~=2 then
-					vai_mode[id]=0
-				end
-			else
+			-- if itemtype(player(id,"weapontype"),"range")<50 then
+				-- -- Yes, melee! Run to target
+				-- if ai_goto(id,object(vai_targetobj[id],"tilex"),object(vai_targetobj[id],"tiley"))~=2 then
+					-- vai_mode[id]=0
+				-- end
+			-- else
 				-- No melee, regular combat!
 				vai_timer[id]=vai_timer[id]-1
 				if vai_timer[id]<=0 then
@@ -35,8 +35,10 @@ function fai_fightbuilding(id)
 					end
 					vai_timer[id]=math.random(50,150)
 				end
-			end
+			-- end
 			return
+		else
+			vai_mode[id]=0 -- dead
 		end
 	end
 	
