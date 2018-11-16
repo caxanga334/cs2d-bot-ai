@@ -25,7 +25,7 @@ function fai_engage(id)
 			local co=closeobjects(player(id,"x"),player(id,"y"),224,30) -- this returns all ids of npcs in a 224 pixels radius
 			if #co~=0 then
 				for i=1,#co do
-					if object(i,"exist")==true then
+					if object(i,"exists")==true then
 						if math.abs(player(id,"x")-object(i,"x"))<315 and math.abs(player(id,"y")-object(i,"y"))<235 then
 							vai_targetnpc[id]=i
 							vai_npcx[id]=object(i,"x")
@@ -46,7 +46,7 @@ function fai_engage(id)
 			local building=closeobjects(px,py,224) -- buildings have multiple IDs, we will filter them later
 			if #building~=0 then
 				for i=1,#building do
-					if object(i,"exist")==true then
+					if object(i,"exists")==true then
 						local obx=object(i,"x")
 						local oby=object(i,"y")
 						local objtype=object(i,"type")
@@ -174,8 +174,9 @@ function fai_engage(id)
 			vai_mode[id]=9
 		end
 	elseif vai_targetobj[id]>0 then
-		vai_aimx[id]=vai_objx[id]
-		vai_aimy[id]=vai_objy[id]
+		-- makes them aim at the center of the building
+		vai_aimx[id]=object(vai_targetobj[id],"tilex")*32+16
+		vai_aimy[id]=object(vai_targetobj[id],"tiley")*32+16
 		-- Switch to fight mode
 		if vai_mode[id]~=10 and vai_mode[id]~=9 and vai_mode[id]~=4 and vai_mode[id]~=5 then
 			vai_timer[id]=math.random(25,100)
@@ -198,7 +199,9 @@ function fai_engage(id)
 			ai_iattack(id)
 		end
 	elseif vai_targetobj[id]>0 then
-		if math.abs(fai_angledelta(tonumber(player(id,"rot")),fai_angleto(player(id,"x"),player(id,"y"),vai_objx[id],vai_objx[id])))<20 then
+		local obanglex=object(vai_targetobj[id],"tilex")*32+16
+		local obangley=object(vai_targetobj[id],"tiley")*32+16
+		if math.abs(fai_angledelta(tonumber(player(id,"rot")),fai_angleto(player(id,"x"),player(id,"y"),obanglex,obangley)))<20 then
 			ai_iattack(id)
 		end
 	end
