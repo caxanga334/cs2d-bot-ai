@@ -224,7 +224,7 @@ function ai_update_living(id)
 		if result==1 then -- bot arrived to destination
 			fai_usentity(id)
 		elseif result==0 then -- failed to find path
-			vai_entityscan[id]=4500
+			vai_entityscan[id]=2500
 			vai_mode[id]=0
 		else
 			fai_walkaim(id)

@@ -21,7 +21,8 @@ function fai_scanforentity(id)
 				local dx=0 -- distance between bot and the entity
 				local dy=0
 				if entity(ex,ey,"exists") then -- check if there is really an entity in there
-					-- distance check
+					-- distance check, we don't want the BOT going to the other side of the map because of a button
+					-- CHEAT!! BOT will see invisible buttons!
 					if ex>px then
 						dx=ex-px
 					elseif px>ex then
@@ -29,10 +30,10 @@ function fai_scanforentity(id)
 					end
 					if ey>py then
 						dy=ey-py
-					elseif px>ex then
+					elseif py>ey then
 						dy=py-ey
 					end
-					if dx<=5 and dy<=5 then -- bot is near the entity
+					if dx<=7 and dy<=7 then -- bot is near the entity
 						interact=true
 					end
 				end
@@ -42,7 +43,7 @@ function fai_scanforentity(id)
 					vai_destx[id]=ex
 					vai_desty[id]=ey
 					if vai_set_debug==1 then
-						print("BOT interacting with entity @ ("..ex..","..ey..")")
+						print("BOT @ ("..px..","..py..") interacting with entity @ ("..ex..","..ey..")")
 					end
 				end
 			end

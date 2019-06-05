@@ -153,6 +153,9 @@ function fai_randommaptile(id)
 				-- If all this is true, set it!
 				vai_destx[id]=x
 				vai_desty[id]=y
+				if vai_set_debug==1 then
+					print("Random Map Tile returned x: "..x..", y: "..y.."")
+				end				
 				return
 			end
 		end

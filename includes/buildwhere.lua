@@ -137,6 +137,16 @@ function fai_findbuildspot(id)
 		end
 	end
 	
+	if vai_set_debug==1 then
+		if r==1 then
+			print("BOT build goal: Point of Interest")
+		elseif r==2 then
+			print("BOT build goal: BOT Node")
+		else
+			print("BOT build goal: Random")
+		end
+	end
+	
 	-- FAIL SAFE
 	if not tile(vai_destx[id],vai_desty[id], "walkable") then
 		vai_mode[id]=0

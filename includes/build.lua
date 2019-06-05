@@ -58,6 +58,9 @@ function fai_build(id)
 			end
 		end
 	end
+	if vai_set_debug==1 then
+		print("BOT finished building. buildtype: "..rb..", chatrand: "..rann..", @ ("..bx..","..by..")")
+	end
 	-- finished building
 	vai_mode[id]=0
 	vai_smode[id]=0
