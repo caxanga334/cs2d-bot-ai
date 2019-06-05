@@ -2,11 +2,12 @@
 function fai_findbuildspot(id)
 	local team=player(id,"team")
 	local money=player(id,"money")
+	local r=math.random(1,3)
 	
 	-- decide where should we build
 	if team==1 then -- TERRORIST
 	-- build1: map objective | build2: bot node if available | build3: random tile
-		local r=math.random(1,3)
+		--local r=math.random(1,3)
 		local buildx=math.random(-3,3)
 		local buildy=math.random(-3,3)
 		if r==1 then -- build at entities of interest
@@ -71,7 +72,7 @@ function fai_findbuildspot(id)
 			vai_smode[id]=3
 		end
 	else -- COUNTER-TERRORIST
-		local r=math.random(1,3)
+		--local r=math.random(1,3)
 		local buildx=math.random(-3,3)
 		local buildy=math.random(-3,3)
 		if r==1 then -- build at entities of interest

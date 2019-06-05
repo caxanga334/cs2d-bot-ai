@@ -4,6 +4,12 @@ function fai_scanforentity(id)
 
 	-- global function variables
 	local interact=false
+	local px=player(id,"tilex") -- player tile
+	local py=player(id,"tiley")
+	local ex=0 -- entity tile
+	local ey=0
+	local dx=0 -- distance between bot and the entity
+	local dy=0
 	
 	-- Scan Timer
 	vai_entityscan[id]=vai_entityscan[id]+-1
@@ -14,12 +20,10 @@ function fai_scanforentity(id)
 		if vai_mode[id]~=20 then
 			local elist=entitylist(93) -- scans for Trigger_Use
 			for _,e in pairs(elist) do
-				local px=player(id,"tilex") -- player tile
-				local py=player(id,"tiley")
-				local ex=e.x -- entity tile
-				local ey=e.y
-				local dx=0 -- distance between bot and the entity
-				local dy=0
+				ex=e.x -- entity tile
+				ey=e.y
+				dx=0 -- distance between bot and the entity
+				dy=0
 				if entity(ex,ey,"exists") then -- check if there is really an entity in there
 					-- distance check, we don't want the BOT going to the other side of the map because of a button
 					-- CHEAT!! BOT will see invisible buttons!
@@ -33,18 +37,20 @@ function fai_scanforentity(id)
 					elseif py>ey then
 						dy=py-ey
 					end
+					interact=false
 					if dx<=7 and dy<=7 then -- bot is near the entity
 						interact=true
+						break
 					end
 				end
-				if interact==true then
-					vai_mode[id]=20
-					vai_smode[id]=93 -- smode should store the entity ID
-					vai_destx[id]=ex
-					vai_desty[id]=ey
-					if vai_set_debug==1 then
-						print("BOT @ ("..px..","..py..") interacting with entity @ ("..ex..","..ey..")")
-					end
+			end
+			if interact==true then
+				vai_mode[id]=20
+				vai_smode[id]=93 -- smode should store the entity ID
+				vai_destx[id]=ex
+				vai_desty[id]=ey
+				if vai_set_debug==1 then
+					print("BOT @ ("..px..","..py..") interacting with entity @ ("..ex..","..ey..") distance ("..dx..","..dy..")")
 				end
 			end
 		end
