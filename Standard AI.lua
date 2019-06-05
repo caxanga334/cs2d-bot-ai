@@ -27,6 +27,7 @@ dofile("bots/includes/hostages.lua")	-- rescue hostages
 dofile("bots/includes/buildwhere.lua")  -- decides where the bot will build
 dofile("bots/includes/build.lua")  		-- decides what the bot will build
 dofile("bots/includes/entityscan.lua")  -- scans and interacts with nearby entities
+dofile("bots/includes/objectscan.lua")  -- scans and interacts with nearby objects
 
 -- Setting Cache
 vai_set_gm=0							-- Game Mode Setting (equals "sv_gamemode", Cache)
@@ -49,6 +50,7 @@ vai_targetobj={}						-- target (Building)
 vai_reaim={}; vai_rescan={}				-- re-aim / re-scan (line of fire checks)
 vai_itemscan={}							-- item scan countdown (for collecting items)
 vai_entityscan={}						-- entity scan countdown (for interacting with entities)
+vai_objectscan={}						-- object scan countdown (for interacting with objects)
 vai_buyingdone={}						-- buying done?
 vai_radioanswer={}						-- radio answer?
 vai_radioanswert={}						-- radio answer timer
@@ -66,6 +68,7 @@ for i=1,32 do
 	vai_reaim[i]=0; vai_rescan[i]=0
 	vai_itemscan[i]=0
 	vai_entityscan[i]=0
+	vai_objectscan[i]=0
 	vai_buyingdone[i]=0
 	vai_radioanswer[i]=0; vai_radioanswert[i]=0
 end
@@ -93,6 +96,7 @@ function ai_onspawn(id)
 	vai_reaim[id]=0; vai_rescan[id]=0
 	vai_itemscan[id]=1000
 	vai_entityscan[id]=600
+	vai_objectscan[i]=800
 	vai_buyingdone[id]=0
 	vai_radioanswer[id]=0; vai_radioanswert[id]=0;
 end
