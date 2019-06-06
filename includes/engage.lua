@@ -2,7 +2,8 @@
 -- Engage Enemies
 function fai_engage(id)
 
-	local objectscan=1
+	local npcscan=1
+	local buildingscan=1
 	-- ############################################################ Find Target
 	vai_reaim[id]=vai_reaim[id]-1
 	if vai_reaim[id]<0 then
@@ -21,7 +22,7 @@ function fai_engage(id)
 				fai_randomadjacent(id)
 			end
 		end
-		if objectscan==1 then -- NPC scan
+		if npcscan==1 then -- NPC scan
 			local co=closeobjects(player(id,"x"),player(id,"y"),224,30) -- this returns all ids of npcs in a 224 pixels radius
 			if #co~=0 then
 				for i=1,#co do
@@ -39,7 +40,7 @@ function fai_engage(id)
 				end
 			end
 		end
-		if objectscan==1 then -- BUILDING scan
+		if buildingscan==1 then -- BUILDING scan
 			local px=player(id,"x")
 			local py=player(id,"y")
 			local plrteam=player(id,"team")

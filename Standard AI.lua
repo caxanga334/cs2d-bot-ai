@@ -38,6 +38,7 @@ fai_update_settings()
 
 -- Per Player Variables
 vai_mode={}; vai_smode={}				-- current mode (state) and sub-mode (sub-state / parameter)
+vai_cache={}							-- cache helper
 vai_timer={}							-- timer
 vai_destx={}; vai_desty={}				-- destination x|y
 vai_aimx={}; vai_aimy={}				-- aim at x|y
@@ -56,6 +57,7 @@ vai_radioanswer={}						-- radio answer?
 vai_radioanswert={}						-- radio answer timer
 for i=1,32 do
 	vai_mode[i]=-1; vai_smode[i]=0
+	vai_cache[i]=0
 	vai_timer[i]=0
 	vai_destx[i]=0; vai_desty[i]=0
 	vai_aimx[i]=0; vai_aimy[i]=0
@@ -82,6 +84,7 @@ function ai_onspawn(id)
 	
 	-- reset variables for the spawned bot
 	vai_mode[id]=-1; vai_smode[id]=0
+	vai_cache[id]=0
 	vai_timer[id]=math.random(1,10)
 	vai_destx[id]=0; vai_desty[id]=0
 	vai_aimx[id]=player(id,"x")-50+math.random(0,100)
@@ -145,6 +148,7 @@ function ai_update_living(id)
 	if vai_mode[id]==0 then
 		-- ############################################################ 0: IDLE -> decide what to do next
 		vai_timer[id]=0; vai_smode[id]=0
+		vai_cache[id]=0
 		fai_decide(id)
 		
 	elseif vai_mode[id]==1 then
@@ -222,6 +226,18 @@ function ai_update_living(id)
 	elseif vai_mode[id]==10 then
 		-- ############################################################ 10: FIGHT BUILDING -> attack a building
 		fai_fightbuilding(id)
+		
+	elseif vai_mode[id]==11	then
+		-- ############################################################ 11: GO TO BREAKABLE -> go to an Env_Breakable
+		if ai_goto(id,vai_destx[id],vai_desty[id])~=2 then
+			vai_mode[id]=12
+		else
+			fai_walkaim(id)
+		end
+	
+	elseif vai_mode[id]==12	then
+		-- ############################################################ 12: ATTACK BREAKABLE -> attack an Env_Breakable
+		fai_destroybreakable(id)
 		
 	elseif vai_mode[id]==20 then
 		-- ############################################################ 20: INTERACT -> interact with an entity

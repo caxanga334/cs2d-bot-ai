@@ -14,7 +14,7 @@ function fai_collect(id)
 		vai_itemscan[id]=math.random(0,50)
 		
 		-- Not collecting yet AND not a zombie?
-		if (vai_mode[id]~=6 or vai_mode[id]~=20 or vai_mode[id]~=21 or vai_mode[id]~=22 or vai_mode[id]~=23) and not(player(id,"team")==1 and vai_set_gm==4) then
+		if (vai_mode[id]~=6 or vai_mode[id]~=20 or vai_mode[id]~=21 or vai_mode[id]~=22 or vai_mode[id]~=23 or vai_mode[id]~=11) and not(player(id,"team")==1 and vai_set_gm==4) then
 			-- Find and scan close items (5 tiles around)
 			local items=closeitems(id,5)
 			for i=1,#items do
