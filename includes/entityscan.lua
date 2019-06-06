@@ -39,8 +39,10 @@ function fai_scanforentity(id)
 					end
 					interact=false
 					if dx<=7 and dy<=7 then -- bot is near the entity
-						interact=true
-						break
+						if entity(ex,ey,"int2")==0 or player(id,"team")==entity(ex,ey,"int2") then -- button is all team or my team
+							interact=true
+							break
+						end
 					end
 				end
 			end

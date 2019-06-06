@@ -15,8 +15,8 @@ function fai_decide(id)
 		-- ############################################################ Game Mode 4: Zombies
 		if team==1 then
 			------------------- Terrorists (Zombies)
-			local r=math.random(1,3)
-			if r<=2 then
+			local r=math.random(1,4)
+			if r==1 then
 				-- Goto CT Spawn / Botnode
 				if map("botnodes")>0 and math.random(0,2)==1 then
 					vai_destx[id],vai_desty[id]=randomentity(19) -- info_botnode
@@ -24,6 +24,19 @@ function fai_decide(id)
 				else
 					vai_destx[id],vai_desty[id]=randomentity(1) -- info_ct
 					vai_mode[id]=2
+				end
+			elseif r==2 then
+				fai_randommaptile(id) -- Random map tile
+				vai_smode[id]=1 -- smode 1 is to identify when a bot is using random map tile
+			elseif r==3 then --CHEAT! Go to a living CT
+				for i=1,20 do --20 searches
+					local rp=math.random(1,#player(0,"table"))
+					if player(rp,"exists") and player(rp,"team")==2 then
+						vai_destx[id]=player(rp,"tilex")
+						vai_desty[id]=player(rp,"tiley")
+						vai_mode[id]=2
+						break
+					end
 				end
 			else
 				-- Goto T Spawn
@@ -34,9 +47,10 @@ function fai_decide(id)
 			------------------- Counter-Terrorists
 			local r=math.random(1,3)
 			if r==1 then
-				-- Goto T Spawn
-				vai_destx[id],vai_desty[id]=randomentity(0) -- info_t
-				vai_mode[id]=2
+				-- Goto T Spawn -- going to T spawn is stupid in zombies game mode. It's basically wanting death.
+				-- vai_destx[id],vai_desty[id]=randomentity(0) -- info_t
+				-- vai_mode[id]=2
+				fai_randommaptile(id) -- go to a random place in the map instead
 			else
 				-- Goto CT Spawn / Botnode
 				if map("botnodes")>0 and math.random(0,2)==1 then
