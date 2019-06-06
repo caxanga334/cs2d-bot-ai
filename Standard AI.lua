@@ -96,7 +96,7 @@ function ai_onspawn(id)
 	vai_reaim[id]=0; vai_rescan[id]=0
 	vai_itemscan[id]=1000
 	vai_entityscan[id]=600
-	vai_objectscan[i]=800
+	vai_objectscan[id]=400
 	vai_buyingdone[id]=0
 	vai_radioanswer[id]=0; vai_radioanswert[id]=0;
 end
@@ -132,10 +132,11 @@ function ai_update_living(id)
 	fai_collect(id)
 	-- Scan surroundings for entities of interest
 	fai_scanforentity(id)
+	fai_scanforobject(id)
 	
 	-- Set AI Debug Output (only visible if CS2D setting "debugai" is set to 1)
 	if vai_set_debug then
-		ai_debug(id,"m:"..vai_mode[id]..", sm:"..vai_smode[id].." ta:"..vai_target[id].." ti:"..vai_timer[id]..", es:"..vai_entityscan[id])
+		ai_debug(id,"m:"..vai_mode[id]..", sm:"..vai_smode[id].." ta:"..vai_target[id].." ti:"..vai_timer[id]..", es:"..vai_entityscan[id]..", os: "..vai_objectscan[id])
 	end
 	
 	-- The AI is basically a state machine
@@ -233,6 +234,35 @@ function ai_update_living(id)
 		else
 			fai_walkaim(id)
 		end
+		
+	elseif vai_mode[id]==21 then
+		-- ############################################################ 21: INTERACT OBJECT -> interact with an object
+		local result=ai_goto(id,vai_destx[id],vai_desty[id])
+		if result==1 then -- bot arrived to destination
+			if vai_smode[id]==7 then -- dispenser
+				fai_usedispenser(id)
+			end
+		elseif result==0 then -- failed to find path
+			vai_objectscan[id]=2000
+			vai_mode[id]=0
+		else
+			fai_walkaim(id)
+		end	
+		
+	elseif vai_mode[id]==22 then
+		-- ############################################################ 22: USING DISPENSER -> bot is using the dispenser
+		fai_wait(id,0)
+		
+	elseif vai_mode[id]==23 then
+		-- ############################################################ 23: USING TELEPORTER -> bot is using a teleporter
+		if ai_goto(id,vai_destx[id],vai_desty[id])~=2 then -- probably won't happen
+			vai_mode[id]=0
+			vai_smode[id]=0
+			vai_objectscan[id]=900
+		else
+			fai_walkaim(id)
+		end
+		fai_checkteleport(id, vai_smode[id])
 	
 	elseif vai_mode[id]==50 then
 		-- ############################################################ 50: RESCUE -> rescue hostages
