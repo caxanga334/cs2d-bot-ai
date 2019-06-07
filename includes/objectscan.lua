@@ -12,7 +12,7 @@ function fai_scanforobject(id)
 	-- Scan Timer
 	vai_objectscan[id]=vai_objectscan[id]+-1
 	if vai_objectscan[id]<=0 then -- timer is 0 and bot is not already using something.
-		vai_objectscan[id]=math.random(500,700)
+		vai_objectscan[id]=math.random(150,350)
 		
 		if vai_mode[id]~=21 or vai_mode[id]~=22 or vai_mode[id]~=23 or vai_mode[id]~=20 then
 		

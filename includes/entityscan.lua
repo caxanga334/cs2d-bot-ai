@@ -18,7 +18,7 @@ function fai_scanforentity(id)
 	-- Scan Timer
 	vai_entityscan[id]=vai_entityscan[id]+-1
 	if vai_entityscan[id]<=0 then
-		vai_entityscan[id]=math.random(400,600)
+		vai_entityscan[id]=math.random(200,400)
 		
 		-- mode check
 		if vai_mode[id]~=20 or vai_mode[id]~=21 or vai_mode[id]~=22 or vai_mode[id]~=23 or vai_mode[id]~=11 or vai_mode[id]~=12 then
