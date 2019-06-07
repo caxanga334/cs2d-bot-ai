@@ -161,3 +161,23 @@ function fai_randommaptile(id)
 		end
 	end
 end
+
+-- sets the bot destx and desty to a random tile in a N radius of a specific origin
+-- the radius must always be negative
+function fai_setdestrandomradius(id, radius, x, y)
+	local radius2=math.abs(radius)
+	local x2=0
+	local y2=0
+	
+	-- 20 Search attempts
+	for i=1,20 do
+		x2=math.random(radius,radius2)
+		y2=math.random(radius,radius2)
+		
+		if tile(x+x2,y+y2,"walkable") then
+			vai_destx[id]=x+x2
+			vai_desty[id]=y+y2
+			return
+		end
+	end
+end
