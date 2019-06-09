@@ -16,8 +16,8 @@ dofile("bots/includes/general.lua")		-- general helper functions
 dofile("bots/includes/buy.lua")			-- buying
 dofile("bots/includes/decide.lua")		-- decision making process
 dofile("bots/includes/engage.lua")		-- engage/attack/battle (find target and attack)
+dofile("bots/includes/engage_obj.lua")	-- engage/attack/battle (find objects and attack)
 dofile("bots/includes/fight.lua")		-- fight (attack if target is set)
-dofile("bots/includes/fight_npc.lua")	-- fight (attack if target is set)
 dofile("bots/includes/fight_building.lua")	-- fight (attack if target is set)
 dofile("bots/includes/follow.lua")		-- follow another player
 dofile("bots/includes/collect.lua")		-- collect good nearby items
@@ -27,7 +27,7 @@ dofile("bots/includes/hostages.lua")	-- rescue hostages
 dofile("bots/includes/buildwhere.lua")  -- decides where the bot will build
 dofile("bots/includes/build.lua")  		-- decides what the bot will build
 dofile("bots/includes/entityscan.lua")  -- scans and interacts with nearby entities
-dofile("bots/includes/objectscan.lua")  -- scans and interacts with nearby objects
+dofile("bots/includes/objectscan.lua")  -- scans and interacts with nearby objects Note: This is for interacting with objects, not attacking then
 
 -- Setting Cache
 vai_set_gm=0							-- Game Mode Setting (equals "sv_gamemode", Cache)
@@ -43,11 +43,9 @@ vai_timer={}							-- timer
 vai_destx={}; vai_desty={}				-- destination x|y
 vai_aimx={}; vai_aimy={}				-- aim at x|y
 vai_px={}; vai_py={}					-- previous x|y
-vai_npcx={}; vai_npcy={}				-- target npc x|y
 vai_objx={}; vai_objy={}				-- target obj x|y
 vai_target={}							-- target
-vai_targetnpc={}						-- target (NPC)
-vai_targetobj={}						-- target (Building)
+vai_targetobj={}						-- target (Object)
 vai_reaim={}; vai_rescan={}				-- re-aim / re-scan (line of fire checks)
 vai_itemscan={}							-- item scan countdown (for collecting items)
 vai_entityscan={}						-- entity scan countdown (for interacting with entities)
@@ -62,10 +60,8 @@ for i=1,32 do
 	vai_destx[i]=0; vai_desty[i]=0
 	vai_aimx[i]=0; vai_aimy[i]=0
 	vai_px[i]=0; vai_px[i]=0
-	vai_npcx[i]=0; vai_npcy[i]=0
 	vai_objx[i]=0; vai_objy[i]=0
 	vai_target[i]=0
-	vai_targetnpc[i]=0
 	vai_targetobj[i]=0
 	vai_reaim[i]=0; vai_rescan[i]=0
 	vai_itemscan[i]=0
@@ -91,10 +87,8 @@ function ai_onspawn(id)
 	vai_aimy[id]=player(id,"y")-50+math.random(0,100)
 	vai_px[id]=player(id,"x")
 	vai_py[id]=player(id,"y")
-	vai_npcx[id]=0; vai_npcy[id]=0
 	vai_objx[id]=0; vai_objy[id]=0
 	vai_target[id]=0
-	vai_targetnpc[id]=0
 	vai_targetobj[id]=0
 	vai_reaim[id]=0; vai_rescan[id]=0
 	vai_itemscan[id]=1000
@@ -112,6 +106,7 @@ function ai_update_living(id)
 	-- Engage / Aim
 	-- scan surroundings for close enemies and attack them if possible
 	fai_engage(id)
+	fai_engageobject(id)
 	
 	-- bot might get kicked or killed for teamkills etc - check if it is still in-game
 	if not player(id,"exists") then
@@ -221,11 +216,12 @@ function ai_update_living(id)
 		end
 		
 	elseif vai_mode[id]==9 then
-		-- ############################################################ 9: FIGHT NPC -> attack a NPC
-		fai_fightnpc(id)
-	elseif vai_mode[id]==10 then
-		-- ############################################################ 10: FIGHT BUILDING -> attack a building
+		-- ############################################################ 9: FIGHT OBJECT -> attack an object (NPC or BUILDING)
 		fai_fightbuilding(id)
+		
+	elseif vai_mode[id]==10 then
+		-- ############################################################ 10: FIGHT OBJECT MELEE -> attack an object (NPC or BUILDING)
+		fai_meleebuilding(id,vai_smode[id])
 		
 	elseif vai_mode[id]==11	then
 		-- ############################################################ 11: GO TO BREAKABLE -> go to an Env_Breakable

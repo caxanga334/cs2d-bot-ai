@@ -104,6 +104,12 @@ function fai_collect(id)
 						elseif itype==60 and player(id,"gasmask")==false then
 							-- Collect gas mask
 							collect=true
+						elseif itype==61 and fai_lowonammo(id)==true then
+							-- Collect primary ammo
+							collect=true
+						elseif itype==62 and fai_lowonammo(id)==true then
+							-- Collect secondary ammo
+							collect=true
 						end
 					end
 					

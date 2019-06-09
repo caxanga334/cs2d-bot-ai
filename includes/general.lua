@@ -181,3 +181,151 @@ function fai_setdestrandomradius(id, radius, x, y)
 		end
 	end
 end
+
+-- given an object type, return if it's solid
+function fai_isobjectsolid(obtype)
+	if obtype==2 or obtype==6 or obtype==13 or obtype==14 or obtype==30 then
+		return false
+	else
+		return true
+	end
+end
+
+-- this function returns true if an object is enemy
+-- id - player id
+-- obteam - object Team
+-- obtype - object type
+function fai_isobjectenemy(id, obteam, obtype)
+	local plteam=player(id,"team")
+	
+	if obtype==30 then -- NPC
+		return true
+	end
+	
+	if obteam~=plteam then -- the object is not from the BOT's Team
+		if obteam==0 then -- neutral Team
+			if obtype==7 or obtype==9 then -- neutral dispenser and supply
+				return false
+			elseif obtype==1 or obtype>=3 and obtype<=5 or obtype==8 then -- neutral barricade,walls and turret
+				return true
+			else
+				return false
+			end
+		else -- object is NOT neutral and is NOT from our Team
+			if fai_isobjectsolid(obtype)==true then
+				return true
+			else
+				return false
+			end
+		end
+	end
+end
+
+-- object free line correction
+-- only needed for solid objects
+-- x1,y1 - player position
+-- x2,y2 - object position
+function fai_objflcorrection(x1, y1, x2, y2)
+	local rx=0
+	local ry=0
+	
+	-- for x
+	if x1>x2 then -- right (object position)
+		rx=x2+24
+	else -- left, x2>x1
+		rx=x2-24
+	end
+	-- for y
+	if y1>y2 then -- botton (object position)
+		ry=y2+24
+	else -- top, x2>x1
+		ry=y2-24
+	end
+	
+	return rx,ry
+end
+
+-- get the nearest tile of an object
+-- x1,y1 - player tile
+-- x2,y2 - object tile
+function fai_gettiletoobj(x1, y1, x2, y2)
+	local left,right,top,botton=false
+	local al,ar,at,ab=0
+	
+	-- for x
+	if x1>x2 then -- right (object position)
+		right=true
+		ar=270
+	else -- left, x2>x1
+		left=true
+		al=90
+	end
+	-- for y
+	if y1>y2 then -- botton (object position)
+		botton=true
+		ab=0
+	else -- top, x2>x1
+		top=true
+		at=180
+	end
+	
+	-- position 1. x -1, y 0 (middle left)
+	if tile(x2-1,y2, "walkable") and left==true then
+		return x2-1,y2,al
+	-- position 2. x 0, y -1 (middle top)
+	elseif tile(x2,y2-1, "walkable") and top==true then
+		return x2,y2-1,at
+	-- position 3. x 0, y 1 (middle botton)
+	elseif tile(x2,y2+1, "walkable") and botton==true then
+		return x2,y2+1,ab
+	-- position 4. x 1, y 0 (middle right)
+	elseif tile(x2+1,y2, "walkable") and right==true then
+		return x2+1,y2,ar
+	end
+end
+
+-- check if a bot is low on ammo, used to collect ammo boxes
+function fai_lowonammo(id)
+	local weaponType = player(id, "weapontype")
+	local ammoIn,ammo = playerammo(id, weaponType)
+	if vai_set_debug==1 then
+		print("BOT "..player(id,"name").." has ammo in: "..ammoIn..", ammo: "..ammo.."")
+	end
+	
+	if playerammo(id, weaponType)==false then -- false, the BOT doesn't have this weapon
+		return false
+	end
+	
+	if weaponType>=1 and weaponType<=6 then -- IDs of weapon (secondary) with ammo
+		if ammo<25 then
+			return true
+		else
+			return false
+		end
+	elseif weaponType==10 or weaponType==11 then -- shotguns
+		if ammo<10 then
+			return true
+		else
+			return false
+		end
+	elseif weaponType>=20 and weaponType<=24 then -- SMGs
+		if ammo<40 then
+			return true
+		else
+			return false
+		end
+	elseif weaponType>=30 and weaponType<=39 then -- Rifles
+		if ammo<15 then
+			return true
+		else
+			return false
+		end
+	else
+		return false
+	end
+end
+
+-- get distance
+function fai_getdistance(a,b)
+	return math.abs(a-b)
+end
