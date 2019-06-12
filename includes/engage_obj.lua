@@ -9,21 +9,15 @@
 function fai_engageobject(id)
 
 	-- ############################################################ Find Target
-	if vai_target[id]>0 then
-		vai_targetobj[id]=0 -- Prefer attacking enemies
-	end
-	
-	if vai_target[id]==0 then
-		vai_reaim[id]=vai_reaim[id]-1
-	end
 	
 	local px=player(id,"tilex")
 	local py=player(id,"tiley")
 	local sx=999999 -- shortest x
 	local sy=999999 -- shortest y
 	
-	if vai_reaim[id]<0 then
-		vai_reaim[id]=20
+	vai_objreaim[id]=vai_objreaim[id]-1
+	if vai_objreaim[id]<0 then
+		vai_objreaim[id]=20
 		if player(id,"ai_flash")==0 then -- flashed mode is already handled by the player targeting
 			-- Not flashed!
 			-- search for object
@@ -50,6 +44,10 @@ function fai_engageobject(id)
 		end
 	end
 	
+	if vai_target[id]>0 then
+		vai_targetobj[id]=0 -- Prefer attacking enemies
+	end
+	
 	-- ############################################################ Target in Sight?
 	if vai_targetobj[id]>0 then
 		if not object(vai_targetobj[id],"exists") then
@@ -62,8 +60,8 @@ function fai_engageobject(id)
 				local y1=player(id,"y")
 				local x2=object(vai_targetobj[id],"x")+16 -- +16 for center
 				local y2=object(vai_targetobj[id],"y")+16
-				vai_objx[id]=x2
-				vai_objy[id]=y2
+				vai_objx[id]=x2+16
+				vai_objy[id]=y2+16
 				local x3,y3=fai_objflcorrection(x1,y1,x2,y2)
 				
 				-- In Range?
@@ -75,7 +73,7 @@ function fai_engageobject(id)
 						if math.abs(x1-x2)>30 or math.abs(y1-y2)>30 then 
 							if not ai_freeline(id,x3,y3) then
 								vai_targetobj[id]=0
-								msg("free line failed")
+								msg("free line failed, object ID: "..vai_targetobj[id].."")
 							end
 						end
 					end
@@ -95,7 +93,7 @@ function fai_engageobject(id)
 		vai_aimx[id]=object(vai_targetobj[id],"x")+16
 		vai_aimy[id]=object(vai_targetobj[id],"y")+16
 		-- Switch to Fight Mode
-		if vai_mode[id]~=4 and vai_mode[id]~=5 and vai_mode[id]~=9 then
+		if vai_mode[id]~=4 and vai_mode[id]~=5 and vai_mode[id]~=9  and vai_mode[id]~=10 and vai_mode[id]~=12 and vai_mode[id]~=13 and vai_mode[id]~=14 then
 			vai_smode[id]=object(vai_targetobj[id],"type")
 			vai_mode[id]=9
 		end

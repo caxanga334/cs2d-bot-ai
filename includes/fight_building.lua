@@ -6,50 +6,60 @@ function fai_fightbuilding(id)
 	local pty=player(id,"tiley")
 	local otx=object(vai_targetobj[id],"tilex")
 	local oty=object(vai_targetobj[id],"tiley")
-	local cx,cy,angle=0
+
+	-- this function will tell if we should use melee or do a ranged attack
 	if object(vai_targetobj[id],"exists") then
 		if object(vai_targetobj[id],"health")>0 then
-			cx,cy,angle=fai_gettiletoobj(ptx,pty,otx,oty)
-			-- object exists and is not dead/destroyed
-			-- Melee Combat?
+			-- object exists and is not dead
 			if itemtype(player(id,"weapontype"),"range")<50 then
 				-- Yes, melee! Run to target
-				local go=ai_goto(id,cx,cy)
-				if go==1 then -- bot reached destination
-					fai_meleebuilding(id,angle)
-				elseif go==0 then -- bot failed to reach destination
-					vai_mode[id]=0
+				if vai_smode[id]==30 then
+					vai_destx[id],vai_desty[id]=otx,oty -- NPC
+				else
+					vai_destx[id],vai_desty[id]=fai_gettilerandomradius(id, -1, otx, oty)
 				end
+				vai_mode[id]=13
 			else
 				if vai_smode[id]==8 or vai_smode[id]==11 or vai_smode[id]==12 or vai_smode[id]==30 then -- turrets and NPCs
-					ai_iattack(id) -- always do ranged attack agains turrets/NPCs
-				else
-					local go=ai_goto(id,cx,cy)
-					if go==1 then -- bot reached destination
-						fai_meleebuilding(id,angle)
-					elseif go==0 then -- bot failed to reach destination
-						vai_mode[id]=0
-					end
+					vai_mode[id]=12
+				else -- use melee for these
+					vai_destx[id],vai_desty[id]=fai_gettilerandomradius(id, -1, otx, oty)
+					vai_mode[id]=13
 				end
-			end
-		else
-			vai_mode[id]=0 -- object is dead
+			end			
 		end
-	else
-		vai_mode[id]=0 -- object does not exists
 	end
 end
 
-function fai_meleebuilding(id,angle)
+function fai_meleebuilding(id)
+	local a=math.random(-1,1)
+	local angle=fai_angleto(player(id,"x"),player(id,"y"),vai_objx[id],vai_objy[id])
 	if object(vai_targetobj[id],"exists") then
 		if object(vai_targetobj[id],"health")>0 then
-			ai_aim(id,vai_objx[id],vai_objy[id])
 			ai_selectweapon(id,50)
-			ai_attack(id)		
+			ai_attack(id)	
+			if vai_smode[id]==30 then -- NPC
+				ai_goto(id,object(vai_targetobj[id],"tilex"),object(vai_targetobj[id],"tiley"))
+			else
+				ai_move(id,angle)
+			end
+		else
+			vai_mode[id]=0
 		end
 	else
 		vai_mode[id]=0
 	end
-	ai_move(id,angle)
-	ai_rotate(id,angle)
+	--ai_rotate(id,angle)
+	ai_aim(id,vai_objx[id]+a,vai_objy[id]-a)
+end
+
+function fai_attackobjranged(id)
+	if object(vai_targetobj[id],"exists") then
+		if object(vai_targetobj[id],"health")>0 then
+			ai_aim(id,vai_objx[id],vai_objy[id])
+			ai_iattack(id)		
+		end
+	else
+		vai_mode[id]=0
+	end
 end

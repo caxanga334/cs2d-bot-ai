@@ -47,6 +47,7 @@ vai_objx={}; vai_objy={}				-- target obj x|y
 vai_target={}							-- target
 vai_targetobj={}						-- target (Object)
 vai_reaim={}; vai_rescan={}				-- re-aim / re-scan (line of fire checks)
+vai_objreaim={}
 vai_itemscan={}							-- item scan countdown (for collecting items)
 vai_entityscan={}						-- entity scan countdown (for interacting with entities)
 vai_objectscan={}						-- object scan countdown (for interacting with objects)
@@ -64,6 +65,7 @@ for i=1,32 do
 	vai_target[i]=0
 	vai_targetobj[i]=0
 	vai_reaim[i]=0; vai_rescan[i]=0
+	vai_objreaim[i]=0
 	vai_itemscan[i]=0
 	vai_entityscan[i]=0
 	vai_objectscan[i]=0
@@ -91,6 +93,7 @@ function ai_onspawn(id)
 	vai_target[id]=0
 	vai_targetobj[id]=0
 	vai_reaim[id]=0; vai_rescan[id]=0
+	vai_objreaim[id]=0
 	vai_itemscan[id]=1000
 	vai_entityscan[id]=600
 	vai_objectscan[id]=400
@@ -221,7 +224,7 @@ function ai_update_living(id)
 		
 	elseif vai_mode[id]==10 then
 		-- ############################################################ 10: FIGHT OBJECT MELEE -> attack an object (NPC or BUILDING)
-		fai_meleebuilding(id,vai_smode[id])
+			fai_meleebuilding(id)
 		
 	elseif vai_mode[id]==11	then
 		-- ############################################################ 11: GO TO BREAKABLE -> go to an Env_Breakable
@@ -234,6 +237,22 @@ function ai_update_living(id)
 	elseif vai_mode[id]==12	then
 		-- ############################################################ 12: ATTACK BREAKABLE -> attack an Env_Breakable
 		fai_destroybreakable(id)
+		
+	elseif vai_mode[id]==13 then
+		-- ############################################################ 13: GO TO OBJECT (ATTACK) -> go to an object to attack
+		if ai_goto(id,vai_destx[id],vai_desty[id])~=2 then
+			vai_mode[id]=10
+		else
+			fai_walkaim(id)
+		end
+		
+	elseif vai_mode[id]==14 then
+		-- ############################################################ 14: RANGED OBJECT ATTACK -> use ranged attack on an object
+		if ai_goto(id,vai_destx[id],vai_desty[id])~=2 then
+			vai_mode[id]=10
+		else
+			fai_walkaim(id)
+		end
 		
 	elseif vai_mode[id]==20 then
 		-- ############################################################ 20: INTERACT -> interact with an entity

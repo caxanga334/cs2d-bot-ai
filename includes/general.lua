@@ -164,7 +164,7 @@ end
 
 -- sets the bot destx and desty to a random tile in a N radius of a specific origin
 -- the radius must always be negative
-function fai_setdestrandomradius(id, radius, x, y)
+function fai_gettilerandomradius(id, radius, x, y)
 	local radius2=math.abs(radius)
 	local x2=0
 	local y2=0
@@ -175,9 +175,7 @@ function fai_setdestrandomradius(id, radius, x, y)
 		y2=math.random(radius,radius2)
 		
 		if tile(x+x2,y+y2,"walkable") then
-			vai_destx[id]=x+x2
-			vai_desty[id]=y+y2
-			return
+			return x+x2,y+y2
 		end
 	end
 end
@@ -268,6 +266,8 @@ function fai_gettiletoobj(x1, y1, x2, y2)
 		top=true
 		at=180
 	end
+	
+	
 	
 	-- position 1. x -1, y 0 (middle left)
 	if tile(x2-1,y2, "walkable") and left==true then
