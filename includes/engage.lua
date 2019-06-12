@@ -7,7 +7,7 @@ function fai_engage(id)
 	local py=player(id,"tiley")
 	local sx=999999 -- shortest x
 	local sy=999999 -- shortest y
-	local npc=true
+	local npc=false
 	
 	vai_reaim[id]=vai_reaim[id]-1
 	if vai_reaim[id]<0 then
