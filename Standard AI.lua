@@ -16,9 +16,8 @@ dofile("bots/includes/general.lua")		-- general helper functions
 dofile("bots/includes/buy.lua")			-- buying
 dofile("bots/includes/decide.lua")		-- decision making process
 dofile("bots/includes/engage.lua")		-- engage/attack/battle (find target and attack)
-dofile("bots/includes/engage_obj.lua")	-- engage/attack/battle (find objects and attack)
 dofile("bots/includes/fight.lua")		-- fight (attack if target is set)
-dofile("bots/includes/fight_building.lua")	-- fight (attack if target is set)
+dofile("bots/includes/fight_object.lua")	-- fight (attack if target is set)
 dofile("bots/includes/follow.lua")		-- follow another player
 dofile("bots/includes/collect.lua")		-- collect good nearby items
 dofile("bots/includes/radio.lua")		-- radio message handling
@@ -47,7 +46,6 @@ vai_objx={}; vai_objy={}				-- target obj x|y
 vai_target={}							-- target
 vai_targetobj={}						-- target (Object)
 vai_reaim={}; vai_rescan={}				-- re-aim / re-scan (line of fire checks)
-vai_objreaim={}
 vai_itemscan={}							-- item scan countdown (for collecting items)
 vai_entityscan={}						-- entity scan countdown (for interacting with entities)
 vai_objectscan={}						-- object scan countdown (for interacting with objects)
@@ -65,7 +63,6 @@ for i=1,32 do
 	vai_target[i]=0
 	vai_targetobj[i]=0
 	vai_reaim[i]=0; vai_rescan[i]=0
-	vai_objreaim[i]=0
 	vai_itemscan[i]=0
 	vai_entityscan[i]=0
 	vai_objectscan[i]=0
@@ -93,7 +90,6 @@ function ai_onspawn(id)
 	vai_target[id]=0
 	vai_targetobj[id]=0
 	vai_reaim[id]=0; vai_rescan[id]=0
-	vai_objreaim[id]=0
 	vai_itemscan[id]=1000
 	vai_entityscan[id]=600
 	vai_objectscan[id]=400
@@ -109,7 +105,6 @@ function ai_update_living(id)
 	-- Engage / Aim
 	-- scan surroundings for close enemies and attack them if possible
 	fai_engage(id)
-	fai_engageobject(id)
 	
 	-- bot might get kicked or killed for teamkills etc - check if it is still in-game
 	if not player(id,"exists") then
@@ -218,14 +213,6 @@ function ai_update_living(id)
 			vai_mode[id]=0
 		end
 		
-	elseif vai_mode[id]==9 then
-		-- ############################################################ 9: FIGHT OBJECT -> attack an object (NPC or BUILDING)
-		fai_fightbuilding(id)
-		
-	elseif vai_mode[id]==10 then
-		-- ############################################################ 10: FIGHT OBJECT MELEE -> attack an object (NPC or BUILDING)
-			fai_meleebuilding(id)
-		
 	elseif vai_mode[id]==11	then
 		-- ############################################################ 11: GO TO BREAKABLE -> go to an Env_Breakable
 		if ai_goto(id,vai_destx[id],vai_desty[id])~=2 then
@@ -237,22 +224,6 @@ function ai_update_living(id)
 	elseif vai_mode[id]==12	then
 		-- ############################################################ 12: ATTACK BREAKABLE -> attack an Env_Breakable
 		fai_destroybreakable(id)
-		
-	elseif vai_mode[id]==13 then
-		-- ############################################################ 13: GO TO OBJECT (ATTACK) -> go to an object to attack
-		if ai_goto(id,vai_destx[id],vai_desty[id])~=2 then
-			vai_mode[id]=10
-		else
-			fai_walkaim(id)
-		end
-		
-	elseif vai_mode[id]==14 then
-		-- ############################################################ 14: RANGED OBJECT ATTACK -> use ranged attack on an object
-		if ai_goto(id,vai_destx[id],vai_desty[id])~=2 then
-			vai_mode[id]=10
-		else
-			fai_walkaim(id)
-		end
 		
 	elseif vai_mode[id]==20 then
 		-- ############################################################ 20: INTERACT -> interact with an entity
@@ -286,7 +257,7 @@ function ai_update_living(id)
 		
 	elseif vai_mode[id]==23 then
 		-- ############################################################ 23: USING TELEPORTER -> bot is using a teleporter
-		if ai_goto(id,vai_destx[id],vai_desty[id])~=2 then -- probably won't happen
+		if ai_goto(id,vai_destx[id],vai_desty[id])~=2 then -- this will only happen if the teleporter doesn't have an exit
 			vai_mode[id]=0
 			vai_smode[id]=0
 			vai_objectscan[id]=900
@@ -294,6 +265,25 @@ function ai_update_living(id)
 			fai_walkaim(id)
 		end
 		fai_checkteleport(id, vai_smode[id])
+		
+	elseif vai_mode[id]==30 then
+		-- ############################################################ 30: FOUND OBJECT -> the bot found an object, decide what to do.
+		fai_enganeobject(id)
+		
+	elseif vai_mode[id]==31 then
+		-- ############################################################ 31: MELEE OBJECT -> do a melee attack on an object
+		local result=ai_goto(id,vai_destx[id],vai_desty[id])
+		if result==1 then
+			fai_meleeobject(id)
+		elseif result==0 then
+			vai_mode[id]=0
+		else
+			fai_walkaim(id)
+		end
+
+	elseif vai_mode[id]==32 then
+		-- ############################################################ 32: RANGED OBJECT -> do a ranged attack on an object
+		fai_rangedobject(id)
 	
 	elseif vai_mode[id]==50 then
 		-- ############################################################ 50: RESCUE -> rescue hostages

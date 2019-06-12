@@ -3,6 +3,12 @@
 function fai_engage(id)
 
 	-- ############################################################ Find Target
+	local px=player(id,"tilex")
+	local py=player(id,"tiley")
+	local sx=999999 -- shortest x
+	local sy=999999 -- shortest y
+	local npc=true
+	
 	vai_reaim[id]=vai_reaim[id]-1
 	if vai_reaim[id]<0 then
 		vai_reaim[id]=20
@@ -12,6 +18,34 @@ function fai_engage(id)
 			if vai_target[id]>0 then
 				vai_rescan[id]=0
 			end
+			
+			-- search for object
+			local objectlist=closeobjects(player(id,"x"),player(id,"y"),224) -- 7 tiles range
+			for _,obj in pairs(objectlist) do -- bot will probably use the first object it sees. Objects are sorted by IDs. Maybe we should select a random object instead of always using the first in the list?
+				local obtype=object(obj,"type")
+				local obteam=object(obj,"team")
+				local ox=object(obj,"tilex")
+				local oy=object(obj,"tiley")
+				
+				if fai_isobjectenemy(id, obteam, obtype)==true then
+					if obtype==30 or fai_isobjectsolid(obtype)==true then -- NPCs are not solid
+						if fai_getdistance(px,sx) < sx then
+							sx=fai_getdistance(px,sx)
+							if obtype==30 then
+								npc=true
+							else
+								npc=false
+							end
+							vai_targetobj[id]=obj
+						end
+					else
+						vai_targetobj[id]=0 -- do not attack non solid objects for now
+					end
+				else
+					vai_targetobj[id]=0 -- do not attack (team check)
+				end
+			end
+			
 		else
 			-- Flashed! No target! Go to flashed mode
 			vai_target[id]=0
@@ -58,6 +92,50 @@ function fai_engage(id)
 		end
 	end
 	
+	if vai_targetobj[id]>0 and vai_target[id]==0 then
+		if not object(vai_targetobj[id],"exists") then
+			-- If target player does not exist anymore -> reset
+			vai_targetobj[id]=0
+		else
+			if object(vai_targetobj[id],"health")>0 then
+				-- Cache Positions
+				local x1=player(id,"x")
+				local y1=player(id,"y")
+				local x2=object(vai_targetobj[id],"x")+16 -- +16 for center
+				local y2=object(vai_targetobj[id],"y")+16
+				vai_objx[id]=x2
+				vai_objy[id]=y2
+				local x3,y3=fai_objflcorrection(x1,y1,x2,y2)
+				
+				-- In Range?
+				if math.abs(x1-x2)<420 and math.abs(y1-y2)<235 then
+					-- Freeline Scan
+					vai_rescan[id]=vai_rescan[id]-1
+					if vai_rescan[id]<0 then
+						vai_rescan[id]=10
+						if math.abs(x1-x2)>30 or math.abs(y1-y2)>30 then 
+							if npc==true then
+								if not ai_freeline(id,x2-16,y2-16) then
+									vai_target[id]=0
+								end								
+							else
+								if not ai_freeline(id,x3,y3) then
+									vai_target[id]=0
+								end							
+							end
+						end
+					end
+				else
+					-- Target player out of range -> reset
+					vai_targetobj[id]=0
+				end
+			else
+				-- Target player is dead, spectator or no enemy -> reset
+				vai_targetobj[id]=0
+			end
+		end
+	end
+	
 	-- ############################################################ Aim
 	if vai_target[id]>0 then
 		vai_aimx[id]=player(vai_target[id],"x")
@@ -67,6 +145,15 @@ function fai_engage(id)
 			vai_timer[id]=math.random(25,100)
 			vai_smode[id]=math.random(0,360)
 			vai_mode[id]=4
+		end
+	end
+	
+	if vai_target[id]==0 and vai_targetobj[id]>0 then
+		vai_aimx[id]=object(vai_targetobj[id],"x")+16
+		vai_aimy[id]=object(vai_targetobj[id],"y")+16
+		-- Switch to Fight Mode
+		if vai_mode[id]~=4 and vai_mode[id]~=5 and vai_mode[id]~=30 and vai_mode[id]~=31 and vai_mode[id]~=32 then
+			vai_mode[id]=30
 		end
 	end
 

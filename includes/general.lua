@@ -204,7 +204,7 @@ function fai_isobjectenemy(id, obteam, obtype)
 		if obteam==0 then -- neutral Team
 			if obtype==7 or obtype==9 then -- neutral dispenser and supply
 				return false
-			elseif obtype==1 or obtype>=3 and obtype<=5 or obtype==8 then -- neutral barricade,walls and turret
+			elseif obtype==1 or obtype>=3 and obtype<=5 or obtype==8 or obtype==11 or obtype==12 then -- neutral barricade,walls and turret
 				return true
 			else
 				return false
