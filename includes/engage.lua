@@ -37,12 +37,13 @@ function fai_engage(id)
 								npc=false
 							end
 							vai_targetobj[id]=obj
+							vai_rescan[id]=0
 						end
 					else
-						vai_targetobj[id]=0 -- do not attack non solid objects for now
+						vai_targetobj[id]=-1 -- do not attack non solid objects for now
 					end
 				else
-					vai_targetobj[id]=0 -- do not attack (team check)
+					vai_targetobj[id]=-1 -- do not attack (team check)
 				end
 			end
 			
@@ -77,7 +78,7 @@ function fai_engage(id)
 						vai_rescan[id]=10
 						if math.abs(x1-x2)>30 or math.abs(y1-y2)>30 then 
 							if not ai_freeline(id,x2,y2) then
-								vai_target[id]=0
+								vai_target[id]=-1
 							end
 						end
 					end
@@ -95,7 +96,7 @@ function fai_engage(id)
 	if vai_targetobj[id]>0 and vai_target[id]==0 then
 		if not object(vai_targetobj[id],"exists") then
 			-- If target player does not exist anymore -> reset
-			vai_targetobj[id]=0
+			vai_targetobj[id]=-1
 		else
 			if object(vai_targetobj[id],"health")>0 then
 				-- Cache Positions
@@ -116,22 +117,22 @@ function fai_engage(id)
 						if math.abs(x1-x2)>30 or math.abs(y1-y2)>30 then 
 							if npc==true then
 								if not ai_freeline(id,x2-16,y2-16) then
-									vai_target[id]=0
+									vai_target[id]=-1
 								end								
 							else
 								if not ai_freeline(id,x3,y3) then
-									vai_target[id]=0
+									vai_target[id]=-1
 								end							
 							end
 						end
 					end
 				else
 					-- Target player out of range -> reset
-					vai_targetobj[id]=0
+					vai_targetobj[id]=-1
 				end
 			else
 				-- Target player is dead, spectator or no enemy -> reset
-				vai_targetobj[id]=0
+				vai_targetobj[id]=-1
 			end
 		end
 	end
@@ -153,6 +154,7 @@ function fai_engage(id)
 		vai_aimy[id]=object(vai_targetobj[id],"y")+16
 		-- Switch to Fight Mode
 		if vai_mode[id]~=4 and vai_mode[id]~=5 and vai_mode[id]~=30 and vai_mode[id]~=31 and vai_mode[id]~=32 then
+			print("BOT is engaging an object! ID: "..vai_targetobj[id].."")
 			vai_mode[id]=30
 		end
 	end
