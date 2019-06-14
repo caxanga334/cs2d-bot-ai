@@ -5,9 +5,10 @@ function fai_engage(id)
 	-- ############################################################ Find Target
 	local px=player(id,"tilex")
 	local py=player(id,"tiley")
-	local sx=999999 -- shortest x
-	local sy=999999 -- shortest y
+	local sx=0 -- shortest x
+	local sy=0 -- shortest y
 	local npc=false
+	local iniobj=0
 	
 	vai_reaim[id]=vai_reaim[id]-1
 	if vai_reaim[id]<0 then
@@ -26,19 +27,44 @@ function fai_engage(id)
 				local obteam=object(obj,"team")
 				local ox=object(obj,"tilex")
 				local oy=object(obj,"tiley")
+				if iniobj==0 then
+					sx=ox -- sets the initial distance values
+					sy=oy
+					iniobj=1
+				end
 				
 				if fai_isobjectenemy(id, obteam, obtype)==true then
 					if obtype==30 or fai_isobjectsolid(obtype)==true then -- NPCs are not solid
-						if fai_getdistance(px,sx) < sx then
-							sx=fai_getdistance(px,sx)
-							if obtype==30 then
-								npc=true
-							else
-								npc=false
-							end
-							vai_targetobj[id]=obj
+						--sy=fai_getdistance(py,oy)
+						--sx=fai_getdistance(px,ox)
+						if obtype==30 then
+							npc=true
+						else
+							npc=false
+						end
+						
+						if sx > ox then
+							sx=ox
+						end
+						if sy > oy then
+							sy=oy
+						end
+						
+						vai_targetobj[id]=objectat(sx,sy)
+						if vai_targetobj[id]>0 then
 							vai_rescan[id]=0
 						end
+						
+						-- if fai_getdistance(px,ox) < sx then
+							-- sx=fai_getdistance(px,ox)
+							-- if fai_getdistance(py,oy) < sy then
+								-- sy=fai_getdistance(py,oy)
+								-- print("BOT: x: "..px..",y: "..py)
+								-- print("Target Object: ID: "..obj..", x: "..ox..", y: "..oy..", sx: "..sx..",sy: "..sy.."")
+								-- vai_rescan[id]=0
+								-- vai_targetobj[id]=obj
+							-- end
+						-- end
 					else
 						vai_targetobj[id]=-1 -- do not attack non solid objects for now
 					end

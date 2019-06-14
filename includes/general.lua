@@ -237,15 +237,17 @@ function fai_objflcorrection(x1, y1, x2, y2)
 	
 	-- for x
 	if x1>x2 then -- right (object position)
-		rx=x2+24
+		rx=x2+20
 	else -- left, x2>x1
-		rx=x2-24
+		rx=x2-20
 	end
 	-- for y
 	if y1>y2 then -- botton (object position)
-		ry=y2+24
+		ry=y2+20
+		rx=x2
 	else -- top, x2>x1
-		ry=y2-24
+		ry=y2-20
+		rx=x2
 	end
 	
 	return rx,ry
@@ -294,14 +296,22 @@ end
 
 -- check if a bot is low on ammo, used to collect ammo boxes
 function fai_lowonammo(id)
-	local weaponType = player(id, "weapontype")
-	local ammoIn,ammo = playerammo(id, weaponType)
-	if vai_set_debug==1 then
-		print("BOT "..player(id,"name").." has ammo in: "..ammoIn..", ammo: "..ammo.."")
+	local weaponType=0
+	local ammoIn,ammo=0
+	weaponType=player(id, "weapontype")
+	ammoIn,ammo=playerammo(id, weaponType)
+	
+	if playerammo(id,weaponType)==false then -- false, the BOT doesn't have this weapon
+		return false
 	end
 	
-	if playerammo(id, weaponType)==false then -- false, the BOT doesn't have this weapon
+	if ammoIn==nil then
+		print("Ammo returned nil")
 		return false
+	end
+	
+	if vai_set_debug==1 then
+		print("BOT "..player(id,"name").." has ammo in: "..ammoIn..", ammo: "..ammo.."")
 	end
 	
 	if weaponType>=1 and weaponType<=6 then -- IDs of weapon (secondary) with ammo
@@ -331,6 +341,7 @@ function fai_lowonammo(id)
 	else
 		return false
 	end
+	
 end
 
 -- get distance

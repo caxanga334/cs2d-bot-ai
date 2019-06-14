@@ -90,6 +90,8 @@ function fai_meleeobject(id)
 			ai_move(id,angle)
 			ai_selectweapon(id,50)
 			ai_attack(id)
+		else
+			vai_mode[id]=0
 		end
 	else
 		vai_mode[id]=0

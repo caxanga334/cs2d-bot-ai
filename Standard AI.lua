@@ -135,11 +135,16 @@ function ai_update_living(id)
 		ai_debug(id,"m:"..vai_mode[id]..", sm:"..vai_smode[id].." ta:"..vai_target[id].." ti:"..vai_timer[id]..", es:"..vai_entityscan[id]..", os: "..vai_objectscan[id])
 	end
 	
+	
+	
 	-- The AI is basically a state machine
 	-- vai_mode contains the current state, vai_smode contains a sub mode or parameter for the state
 	
 	if vai_mode[id]==0 then
 		-- ############################################################ 0: IDLE -> decide what to do next
+		if vai_set_debug then
+			print("BOT "..id.." is IDLE")
+		end
 		vai_timer[id]=0; vai_smode[id]=0
 		vai_cache[id]=0
 		fai_decide(id)
