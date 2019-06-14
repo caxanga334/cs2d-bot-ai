@@ -83,9 +83,11 @@ function fai_meleeobject(id)
 	if object(vai_targetobj[id],"exists") then
 		if object(vai_targetobj[id],"health")>0 then
 			local rnd=math.random(-2,2)
+			local angle=fai_angleto(player(id,"x"),player(id,"y"),object(vai_targetobj[id],"x")+16,object(vai_targetobj[id],"y")+16)
 			vai_aimx[id]=object(vai_targetobj[id],"x")+16+rnd
 			vai_aimy[id]=object(vai_targetobj[id],"y")+16-rnd
 			ai_aim(id,vai_aimx[id],vai_aimy[id])
+			ai_move(id,angle)
 			ai_selectweapon(id,50)
 			ai_attack(id)
 		end

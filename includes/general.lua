@@ -196,8 +196,16 @@ end
 function fai_isobjectenemy(id, obteam, obtype)
 	local plteam=player(id,"team")
 	
+	if obtype>=20 and obtype<=23 then
+		return false
+	end
+	
 	if obtype==30 then -- NPC
 		return true
+	end
+	
+	if obtype==40 then -- NPC
+		return false
 	end
 	
 	if obteam~=plteam then -- the object is not from the BOT's Team
