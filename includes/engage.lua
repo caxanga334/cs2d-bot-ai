@@ -7,6 +7,8 @@ function fai_engage(id)
 	local py=player(id,"tiley")
 	local sx=0 -- shortest x
 	local sy=0 -- shortest y
+	local cx=0 -- position of the closest object
+	local cy=0
 	local npc=false
 	local iniobj=0
 	
@@ -30,6 +32,8 @@ function fai_engage(id)
 				if iniobj==0 then
 					sx=ox -- sets the initial distance values
 					sy=oy
+					cx=ox
+					cy=oy
 					iniobj=1
 				end
 				
@@ -43,34 +47,28 @@ function fai_engage(id)
 							npc=false
 						end
 						
-						if sx > ox then
-							sx=ox
-						end
-						if sy > oy then
-							sy=oy
+						if math.abs(px-ox) < sx then
+							sx=math.abs(px-ox)
+							cx=ox
 						end
 						
-						vai_targetobj[id]=objectat(sx,sy)
-						if vai_targetobj[id]>0 then
-							vai_rescan[id]=0
+						if math.abs(py-oy) < sy then
+							sy=math.abs(py-oy)
+							cy=oy
 						end
 						
-						-- if fai_getdistance(px,ox) < sx then
-							-- sx=fai_getdistance(px,ox)
-							-- if fai_getdistance(py,oy) < sy then
-								-- sy=fai_getdistance(py,oy)
-								-- print("BOT: x: "..px..",y: "..py)
-								-- print("Target Object: ID: "..obj..", x: "..ox..", y: "..oy..", sx: "..sx..",sy: "..sy.."")
-								-- vai_rescan[id]=0
-								-- vai_targetobj[id]=obj
-							-- end
-						-- end
+						
 					else
-						vai_targetobj[id]=-1 -- do not attack non solid objects for now
+						vai_targetobj[id]=0 -- do not attack non solid objects for now
 					end
 				else
-					vai_targetobj[id]=-1 -- do not attack (team check)
+					vai_targetobj[id]=0 -- do not attack (team check)
 				end
+			end
+			
+			vai_targetobj[id]=objectat(cx,cy)
+			if vai_targetobj[id]>0 then
+				vai_rescan[id]=0
 			end
 			
 		else
@@ -122,7 +120,7 @@ function fai_engage(id)
 	if vai_targetobj[id]>0 and vai_target[id]==0 then
 		if not object(vai_targetobj[id],"exists") then
 			-- If target player does not exist anymore -> reset
-			vai_targetobj[id]=-1
+			vai_targetobj[id]=0
 		else
 			if object(vai_targetobj[id],"health")>0 then
 				-- Cache Positions
@@ -154,11 +152,11 @@ function fai_engage(id)
 					end
 				else
 					-- Target player out of range -> reset
-					vai_targetobj[id]=-1
+					vai_targetobj[id]=0
 				end
 			else
 				-- Target player is dead, spectator or no enemy -> reset
-				vai_targetobj[id]=-1
+				vai_targetobj[id]=0
 			end
 		end
 	end
