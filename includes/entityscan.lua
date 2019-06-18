@@ -100,7 +100,7 @@ function fai_scanforentity(id)
 				end
 				if interact==true then
 					vai_mode[id]=11
-					vai_timer[id]=vai_cache[id]+150 -- set attack timer based on breakable health
+					vai_timer[id]=vai_cache[id]+70 -- set attack timer based on breakable health
 					vai_aimx[id]=ex*32+16
 					vai_aimy[id]=ey*32+16
 					-- walkable check

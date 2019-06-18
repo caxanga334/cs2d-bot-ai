@@ -18,7 +18,7 @@ function fai_enganeobject(id)
 				vai_cache[id]=math.random(0,360)
 				vai_mode[id]=32
 			else
-				vai_destx[id],vai_desty[id]=fai_gettilerandomradius(id,-1,object(vai_targetobj[id],"tilex"),object(vai_targetobj[id],"tiley"))
+				vai_destx[id],vai_desty[id]=fai_gettiletoobj(player(id,"tilex"),player(id,"tiley"),object(vai_targetobj[id],"tilex"),object(vai_targetobj[id],"tiley"))
 				vai_mode[id]=31
 			end
 		else
@@ -57,7 +57,7 @@ function fai_rangedobject(id)
 						vai_mode[id]=0
 					end
 				else
-					vai_destx[id],vai_desty[id]=fai_gettilerandomradius(id,-1,object(vai_targetobj[id],"tilex"),object(vai_targetobj[id],"tiley"))
+					vai_destx[id],vai_desty[id]=fai_gettiletoobj(player(id,"tilex"),player(id,"tiley"),object(vai_targetobj[id],"tilex"),object(vai_targetobj[id],"tiley"))
 					vai_mode[id]=31				
 				end
 			else
@@ -82,6 +82,14 @@ end
 function fai_meleeobject(id)
 	if object(vai_targetobj[id],"exists") then
 		if object(vai_targetobj[id],"health")>0 then
+
+			if object(vai_targetobj[id],"type")==30 then
+				vai_destx[id]=object(vai_targetobj[id],"tilex")
+				vai_desty[id]=object(vai_targetobj[id],"tiley")
+			else
+				vai_destx[id],vai_desty[id]=fai_gettiletoobj(player(id,"tilex"),player(id,"tiley"),object(vai_targetobj[id],"tilex"),object(vai_targetobj[id],"tiley"))
+			end
+			
 			local rnd=math.random(-2,2)
 			local angle=fai_angleto(player(id,"x"),player(id,"y"),object(vai_targetobj[id],"x")+16,object(vai_targetobj[id],"y")+16)
 			vai_aimx[id]=object(vai_targetobj[id],"x")+16+rnd

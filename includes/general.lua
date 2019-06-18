@@ -204,7 +204,7 @@ function fai_isobjectenemy(id, obteam, obtype)
 		return true
 	end
 	
-	if obtype==40 then -- NPC
+	if obtype==40 then -- Dynamic Image
 		return false
 	end
 	
@@ -257,40 +257,57 @@ end
 -- x1,y1 - player tile
 -- x2,y2 - object tile
 function fai_gettiletoobj(x1, y1, x2, y2)
-	local left,right,top,botton=false
-	local al,ar,at,ab=0
+	local t=false
+	local b=false
+	local l=false
+	local r=false
+	local dx=0
+	local dy=0
 	
 	-- for x
 	if x1>x2 then -- right (object position)
-		right=true
-		ar=270
+		r=true
 	else -- left, x2>x1
-		left=true
-		al=90
+		l=true
 	end
 	-- for y
 	if y1>y2 then -- botton (object position)
-		botton=true
-		ab=0
+		b=true
 	else -- top, x2>x1
-		top=true
-		at=180
+		t=true
 	end
 	
+	dx=fai_getdistance(x1,x2) -- distance
+	dy=fai_getdistance(y1,y2)
 	
-	
-	-- position 1. x -1, y 0 (middle left)
-	if tile(x2-1,y2, "walkable") and left==true then
-		return x2-1,y2,al
-	-- position 2. x 0, y -1 (middle top)
-	elseif tile(x2,y2-1, "walkable") and top==true then
-		return x2,y2-1,at
-	-- position 3. x 0, y 1 (middle botton)
-	elseif tile(x2,y2+1, "walkable") and botton==true then
-		return x2,y2+1,ab
-	-- position 4. x 1, y 0 (middle right)
-	elseif tile(x2+1,y2, "walkable") and right==true then
-		return x2+1,y2,ar
+	if dx > dy then
+		-- position 1. x -1, y 0 (middle top)
+		if tile(x2,y2-1, "walkable") and t==true then
+			return x2,y2-1
+		-- position 2. x 0, y -1 (middle top)
+		elseif tile(x2,y2+1, "walkable") and b==true then
+			return x2,y2+1
+		-- position 3. x 0, y 1 (middle botton)
+		elseif tile(x2-1,y2, "walkable") and l==true then
+			return x2-1,y2
+		-- position 4. x 1, y 0 (middle right)
+		elseif tile(x2+1,y2, "walkable") and r==true then
+			return x2+1,y2
+		end	
+	else
+		-- position 1. x -1, y 0 (middle left)
+		if tile(x2-1,y2, "walkable") and l==true then
+			return x2-1,y2
+		-- position 2. x 1, y 0 (middle right)
+		elseif tile(x2+1,y2, "walkable") and r==true then
+			return x2+1,y2
+		-- position 3. x 0, y -1 (middle top)
+		elseif tile(x2,y2-1, "walkable") and t==true then
+			return x2,y2-1
+		-- position 4. x 0, y 1 (middle botton)
+		elseif tile(x2,y2+1, "walkable") and b==true then
+			return x2,y2+1
+		end
 	end
 end
 
