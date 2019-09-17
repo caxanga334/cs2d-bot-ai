@@ -327,6 +327,11 @@ function fai_lowonammo(id)
 		return false
 	end
 	
+	if ammo==nil then
+		print("Ammo returned nil")
+		return false
+	end
+	
 	if vai_set_debug==1 then
 		print("BOT "..player(id,"name").." has ammo in: "..ammoIn..", ammo: "..ammo.."")
 	end
@@ -364,4 +369,51 @@ end
 -- get distance
 function fai_getdistance(a,b)
 	return math.abs(a-b)
+end
+
+-- Distance = square root( (x2-x1)^2 + (y2-y1)^2 )
+function util_getdistance(x1,y1,x2,y2)
+	local x3=0
+	local y3=0
+	local d=0
+	
+	x3 = math.pow(x2-x1, 2)
+	y3 = math.pow(y2-y1, 2)
+
+	d = math.sqrt(x3+y3)
+
+	return d
+end
+
+function fai_findobjtarget(id)
+	local ptx=player(id,"tilex")
+	local pty=player(id,"tiley")
+	local px=player(id,"x")
+	local py=player(id,"y")
+	local std=512 -- shortest distance
+	local dth=0 -- distance helper
+	local targetid=0 -- ID of the closest object
+	local objectlist=closeobjects(px,py,256)
+	
+	for _,id in pairs(objectlist) do
+		local ox=object(id,"tilex")
+		local oy=object(id,"tiley")
+		local obtype=object(id,"type")
+		local obteam=object(id,"team")
+		
+		-- enemy check
+		if fai_isobjectenemy(id,obteam,obtype) == false then
+			print("Object Enemy Check Returned False")
+			return 0
+		end
+		
+		dth=util_getdistance(ptx,pty,ox,oy)
+		if dth < std then
+			std=dth
+			targetid=id
+		end
+		
+	end
+	
+	return targetid
 end

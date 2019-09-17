@@ -22,51 +22,7 @@ function fai_engage(id)
 				vai_rescan[id]=0
 			end
 			
-			-- search for object
-			local objectlist=closeobjects(player(id,"x"),player(id,"y"),224) -- 7 tiles range
-			for _,obj in pairs(objectlist) do -- bot will probably use the first object it sees. Objects are sorted by IDs. Maybe we should select a random object instead of always using the first in the list?
-				local obtype=object(obj,"type")
-				local obteam=object(obj,"team")
-				local ox=object(obj,"tilex")
-				local oy=object(obj,"tiley")
-				if iniobj==0 then
-					sx=ox -- sets the initial distance values
-					sy=oy
-					cx=ox
-					cy=oy
-					iniobj=1
-				end
-				
-				if fai_isobjectenemy(id, obteam, obtype)==true then
-					if obtype==30 or fai_isobjectsolid(obtype)==true then -- NPCs are not solid
-						--sy=fai_getdistance(py,oy)
-						--sx=fai_getdistance(px,ox)
-						if obtype==30 then
-							npc=true
-						else
-							npc=false
-						end
-						
-						if math.abs(px-ox) < sx then
-							sx=math.abs(px-ox)
-							cx=ox
-						end
-						
-						if math.abs(py-oy) < sy then
-							sy=math.abs(py-oy)
-							cy=oy
-						end
-						
-						
-					else
-						vai_targetobj[id]=0 -- do not attack non solid objects for now
-					end
-				else
-					vai_targetobj[id]=0 -- do not attack (team check)
-				end
-			end
-			
-			vai_targetobj[id]=objectat(cx,cy)
+			vai_targetobj[id]=fai_findobjtarget(id)
 			if vai_targetobj[id]>0 then
 				vai_rescan[id]=0
 			end
