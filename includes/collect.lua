@@ -115,6 +115,15 @@ function fai_collect(id)
 					
 					--Perform collect?
 					if collect then
+						local objectid = objectat(item(items[i],"x"), item(items[i],"y"))
+						
+						if objectid > 0 then
+							local obtype=object(objectid, "type")
+							if fai_isobjectsolid(obtype) == true then
+								break -- do not collect items inside solid objects
+							end
+						end
+						
 						vai_mode[id]=6
 						vai_smode[id]=itype
 						vai_destx[id]=item(items[i],"x")
