@@ -403,7 +403,6 @@ function fai_findobjtarget(id)
 		
 		-- enemy check
 		if fai_isobjectenemy(id,obteam,obtype) == false then
-			print("Object Enemy Check Returned False")
 			return 0
 		end
 		
