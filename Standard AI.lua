@@ -33,6 +33,7 @@ vai_set_gm=0							-- Game Mode Setting (equals "sv_gamemode", Cache)
 vai_set_botskill=0						-- Bot Skill Setting (equals "bot_skill", Cache) -- 0: very low, 1: low, 2: normal, 3: advanced, 4: professional
 vai_set_botweapons=0					-- Bot Weapons Setting (equals "bot_weapons", Cache)
 vai_set_debug=0							-- Debug Setting (equals "debugai", Cache)
+vai_set_disphealth=-1					-- health from dispenser
 fai_update_settings()
 
 -- Per Player Variables
@@ -142,7 +143,7 @@ function ai_update_living(id)
 	
 	if vai_mode[id]==0 then
 		-- ############################################################ 0: IDLE -> decide what to do next
-		if vai_set_debug then
+		if vai_set_debug == 1 then
 			print("BOT "..id.." is IDLE")
 		end
 		vai_timer[id]=0; vai_smode[id]=0
@@ -327,7 +328,7 @@ function ai_update_living(id)
 	else
 		-- ############################################################ INVALID MODE -> select new mode
 		-- This state should never be reached under normal circumstances
-		if vai_set_debug then
+		if vai_set_debug == 1 then
 			print("invalid AI mode: "..vai_mode[id])
 		end
 		vai_mode[id]=0

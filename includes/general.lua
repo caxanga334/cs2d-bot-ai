@@ -416,3 +416,59 @@ function fai_findobjtarget(id)
 	
 	return targetid
 end
+
+-- find best position around object
+-- player ID, object ID
+function fai_findbpab(pid,oid)
+	local ptx=player(pid,"tilex")
+	local pty=player(pid,"tiley")
+	local otx=object(oid,"tilex")
+	local oty=object(oid,"tiley")
+	local ix=0
+	local iy=0
+	local maxdist=999999
+	local auxdist=0
+	local fx=0
+	local fy=0
+	
+	for i=1,8 do -- tests 8 positions around the object
+	
+		if i == 1 then
+			ix=-1
+			iy=-1
+		else if i == 2 then
+			ix=0
+			iy=-1
+		else if i == 3 then
+			ix=1
+			iy=-1
+		else if i == 4 then
+			ix=-1
+			iy=0
+		else if i == 5 then
+			ix=1
+			iy=0
+		else if i == 6 then
+			ix=-1
+			iy=1
+		else if i == 7 then
+			ix=0
+			iy=1
+		else if i == 8 then
+			ix=1
+			iy=1
+		end
+		
+		if tile(otx+ix,oty+iy, "walkable") then -- tile is walkable
+			if objectat(otx+ix,oty+iy) == 0 then -- no other objects at tile
+				auxdist = util_getdistance(ptx,pty,otx+ix,oty+iy)
+				
+				if auxdist < maxdist then
+					maxdist = auxdist
+					fx=otx+ix
+					fy=oty+iy
+				end
+			end
+		end
+	end
+end

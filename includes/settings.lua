@@ -5,4 +5,5 @@ function fai_update_settings()
 	vai_set_botskill=tonumber(game("bot_skill"))
 	vai_set_botweapons=tonumber(game("bot_weapons"))
 	vai_set_debug=tonumber(game("debugai"))
+	vai_set_disphealth=tonumber(game("mp_dispenser_health"))
 end

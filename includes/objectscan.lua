@@ -17,6 +17,8 @@ function fai_scanforobject(id)
 		if vai_mode[id]~=21 or vai_mode[id]~=22 or vai_mode[id]~=23 or vai_mode[id]~=20 then
 		
 			local objectlist=closeobjects(player(id,"x"),player(id,"y"),224) -- 7 tiles range
+			health = health + 20 -- health tolerance
+			money = money + 1500 -- money tolerance
 
 			for _,obj in pairs(objectlist) do -- bot will probably use the first object it sees. Objects are sorted by IDs. Maybe we should select a random object instead of always using the first in the list?
 				local obtype=object(obj,"type")
@@ -120,7 +122,22 @@ end
 function fai_usedispenser(id)	
 	vai_mode[id]=22
 	vai_smode[id]=0
-	vai_timer[id]=800 -- to do: make this timer based on the bot's money and health
+	local timer=0
+	local maxhp=player(id,"maxhealth")
+	local hp=player(id,"health")
+	local money=player(id,"money")
+	
+	if hp < maxhp then
+		timer = ((maxhp - hp) * (101 - vai_set_disphealth)) * 0.2
+		timer = math.floor(timer)
+	end
+	
+	if timer < 1 then
+		timer = (16000 - money) * 0.1
+		timer = math.floor(timer)
+	end
+	
+	vai_timer[id]=timer -- to do: make this timer based on the bot's money and health
 end
 
 function fai_usetele(id) -- simply reset the AI on teleporter usage
