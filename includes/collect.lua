@@ -15,8 +15,8 @@ function fai_collect(id)
 		
 		-- Not collecting yet AND not a zombie?
 		if (vai_mode[id]~=6 or vai_mode[id]~=20 or vai_mode[id]~=21 or vai_mode[id]~=22 or vai_mode[id]~=23 or vai_mode[id]~=11) and not(player(id,"team")==1 and vai_set_gm==4) then
-			-- Find and scan close items (5 tiles around)
-			local items=closeitems(id,5)
+			-- Find and scan close items (8 tiles around)
+			local items=closeitems(id,8)
 			for i=1,#items do
 				-- Not on same tile?
 				if item(items[i],"x")~=player(id,"tilex") or item(items[i],"y")~=player(id,"tiley") then
@@ -122,6 +122,10 @@ function fai_collect(id)
 							if fai_isobjectsolid(obtype) == true then
 								break -- do not collect items inside solid objects
 							end
+						end
+						
+						if not tile(item(items[i],"x"), item(items[i],"y"), "walkable") then -- item must be on an walkable tile
+							break
 						end
 						
 						vai_mode[id]=6
