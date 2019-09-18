@@ -16,7 +16,7 @@ function fai_scanforobject(id)
 		
 		if vai_mode[id]~=21 or vai_mode[id]~=22 or vai_mode[id]~=23 or vai_mode[id]~=20 then
 		
-			local objectlist=closeobjects(player(id,"x"),player(id,"y"),224) -- 7 tiles range
+			local objectlist=closeobjects(player(id,"x"),player(id,"y"),256) -- 8 tiles range
 			health = health + 20 -- health tolerance
 			money = money + 1500 -- money tolerance
 
@@ -57,43 +57,7 @@ function fai_gotoobject(id, obx, oby, obtype, obj)
 	end
 	
 	if solid==true then -- change the final destination to the side of the object
-		-- being searching for a walkable tile around the object
-		-- there are 8 possible positions
-		-- x 0, y 0 = object tile
-		
-		-- position 1. x -1, y -1 (top left)
-		if tile(obx-1,oby-1, "walkable")then
-			finalx=obx-1
-			finaly=oby-1
-		-- position 2. x -1, y 0 (middle left)
-		elseif tile(obx-1,oby, "walkable") then
-			finalx=obx-1
-			finaly=oby
-		-- position 3. x -1, y 1 (botton left)
-		elseif tile(obx-1,oby+1, "walkable") then
-			finalx=obx-1
-			finaly=oby+1
-		-- position 4. x 0, y -1 (middle top)
-		elseif tile(obx,oby-1, "walkable") then
-			finalx=obx
-			finaly=oby-1
-		-- position 5. x 0, y 1 (middle botton)
-		elseif tile(obx,oby+1, "walkable") then
-			finalx=obx
-			finaly=oby+1
-		-- position 6. x 1, y -1 (top right)
-		elseif tile(obx+1,oby-1, "walkable") then
-			finalx=obx+1
-			finaly=oby-1
-		-- position 7. x 1, y 0 (middle right)
-		elseif tile(obx+1,oby, "walkable") then
-			finalx=obx+1
-			finaly=oby
-		-- position 8. x 1, y 1 (botton right)
-		elseif tile(obx+1,oby+1, "walkable") then
-			finalx=obx+1
-			finaly=oby+1
-		end
+		finalx,finaly=fai_findbpab(id,obj)
 	else
 		finalx=obx
 		finaly=oby

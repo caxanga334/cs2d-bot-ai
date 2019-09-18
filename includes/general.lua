@@ -193,9 +193,8 @@ end
 -- id - player id
 -- obteam - object Team
 -- obtype - object type
-function fai_isobjectenemy(id, obteam, obtype)
-	local plteam=player(id,"team")
-	
+function fai_isobjectenemy(plyteam, obteam, obtype)
+	print("Player Team: "..plyteam..", Object Team "..obteam)
 	if obtype>=20 and obtype<=23 then
 		return false
 	end
@@ -208,7 +207,11 @@ function fai_isobjectenemy(id, obteam, obtype)
 		return false
 	end
 	
-	if obteam~=plteam then -- the object is not from the BOT's Team
+	if obteam==plyteam then
+		return false
+	end
+	
+	if obteam~=plyteam then -- the object is not from the BOT's Team
 		if obteam==0 then -- neutral Team
 			if obtype==7 or obtype==9 then -- neutral dispenser and supply
 				return false
@@ -218,7 +221,7 @@ function fai_isobjectenemy(id, obteam, obtype)
 				return false
 			end
 		else -- object is NOT neutral and is NOT from our Team
-			if fai_isobjectsolid(obtype)==true then
+			if fai_isobjectsolid(obtype) then
 				return true
 			else
 				return false
@@ -388,6 +391,7 @@ end
 function fai_findobjtarget(id)
 	local ptx=player(id,"tilex")
 	local pty=player(id,"tiley")
+	local plyteam=player(id,"team")
 	local px=player(id,"x")
 	local py=player(id,"y")
 	local std=512 -- shortest distance
@@ -395,14 +399,14 @@ function fai_findobjtarget(id)
 	local targetid=0 -- ID of the closest object
 	local objectlist=closeobjects(px,py,256)
 	
-	for _,id in pairs(objectlist) do
-		local ox=object(id,"tilex")
-		local oy=object(id,"tiley")
-		local obtype=object(id,"type")
-		local obteam=object(id,"team")
+	for _,oid in pairs(objectlist) do
+		local ox=object(oid,"tilex")
+		local oy=object(oid,"tiley")
+		local obtype=object(oid,"type")
+		local obteam=object(oid,"team")
 		
 		-- enemy check
-		if fai_isobjectenemy(id,obteam,obtype) == false then
+		if fai_isobjectenemy(plyteam,obteam,obtype) == false then
 			return 0
 		end
 		
@@ -428,33 +432,33 @@ function fai_findbpab(pid,oid)
 	local iy=0
 	local maxdist=999999
 	local auxdist=0
-	local fx=0
-	local fy=0
+	local fx=-1
+	local fy=-1
 	
 	for i=1,8 do -- tests 8 positions around the object
 	
 		if i == 1 then
 			ix=-1
 			iy=-1
-		else if i == 2 then
+		elseif i == 2 then
 			ix=0
 			iy=-1
-		else if i == 3 then
+		elseif i == 3 then
 			ix=1
 			iy=-1
-		else if i == 4 then
+		elseif i == 4 then
 			ix=-1
 			iy=0
-		else if i == 5 then
+		elseif i == 5 then
 			ix=1
 			iy=0
-		else if i == 6 then
+		elseif i == 6 then
 			ix=-1
 			iy=1
-		else if i == 7 then
+		elseif i == 7 then
 			ix=0
 			iy=1
-		else if i == 8 then
+		elseif i == 8 then
 			ix=1
 			iy=1
 		end
@@ -470,5 +474,12 @@ function fai_findbpab(pid,oid)
 				end
 			end
 		end
+	end
+	
+	if fx > -1 then
+		return fx,fy
+	else
+		print("fai_findbpab failed to get a tile around the object")
+		return ptx,pty
 	end
 end
