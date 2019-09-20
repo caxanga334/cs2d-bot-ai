@@ -194,7 +194,6 @@ end
 -- obteam - object Team
 -- obtype - object type
 function fai_isobjectenemy(plyteam, obteam, obtype)
-	print("Player Team: "..plyteam..", Object Team "..obteam)
 	if obtype>=20 and obtype<=23 then
 		return false
 	end
