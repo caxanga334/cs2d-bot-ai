@@ -310,11 +310,6 @@ function fai_lowonammo(id)
 	
 end
 
--- get distance
-function fai_getdistance(a,b)
-	return math.abs(a-b)
-end
-
 -- Distance = square root( (x2-x1)^2 + (y2-y1)^2 )
 function util_getdistance(x1,y1,x2,y2)
 	local x3=0
