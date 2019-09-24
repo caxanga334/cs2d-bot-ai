@@ -9,3 +9,4 @@ This is a modified version of CS2D's BOT AI.
 * Improved item collection
 * Use buttons (trigger_use)
 * Destroy breakables (env_brakable)
+* Weapon Tier System (allow bots to pick up better weapons)
