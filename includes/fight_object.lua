@@ -92,11 +92,12 @@ function fai_meleeobject(id)
 			
 			local rnd=math.random(-2,2)
 			local angle=fai_angleto(player(id,"x"),player(id,"y"),object(vai_targetobj[id],"x")+16,object(vai_targetobj[id],"y")+16)
+			local weapon=fai_getbestmeleewep(id)
 			vai_aimx[id]=object(vai_targetobj[id],"x")+16+rnd
 			vai_aimy[id]=object(vai_targetobj[id],"y")+16-rnd
 			ai_aim(id,vai_aimx[id],vai_aimy[id])
 			ai_move(id,angle)
-			ai_selectweapon(id,50)
+			ai_selectweapon(id,weapon)
 			ai_attack(id)
 		else
 			vai_mode[id]=0
@@ -104,4 +105,29 @@ function fai_meleeobject(id)
 	else
 		vai_mode[id]=0
 	end
+end
+
+function fai_getbestmeleewep(id)
+	local weaponstable=playerweapons(id)
+	local bestwep=50 -- default to knife
+
+	if fai_contains(weaponstable,78) then
+		bestwep=78 -- claw
+	end
+	
+	if fai_contains(weaponstable,69) then
+		bestwep=69 -- machete
+	end
+	
+	if fai_contains(weaponstable,85) then
+		bestwep=85 -- chainsaw
+	end
+	
+	if not fai_contains(weaponstable,50) and bestwep==50 then -- does not have a knife and does not have better weapon
+		if fai_contains(weaponstable,74) then
+			bestwep=74 -- wrench
+		end
+	end
+	
+	return bestwep
 end
