@@ -180,40 +180,47 @@ end
 function fai_getbesttier(id)
 	local weaponstable=playerweapons(id)
 	local tier=0
+	local weapon=0
 	
 	for _, value in pairs(weaponstable) do
 		if value == 10 or value == 11 then
 			tier=1
+			weapon=value
 			break
 		end
 		
 		if value >= 20 and value <= 24 then
 			tier=2
+			weapon=value
 			break
 		end
 		
 		if value >= 30 and value <= 39 then
 			tier=3
+			weapon=value
 			break
 		end
 		
 		if value >= 46 and value <= 49 then
 			tier=4
+			weapon=value
 			break
 		end
 		
 		if value == 90 or value == 91 then
 			tier=4
+			weapon=value
 			break
 		end
 		
 		if value == 45 then
 			tier=5
+			weapon=value
 			break
 		end
 	end
 
-	return value,tier
+	return weapon,tier
 end
 
 -- returns true if it's a better weapon
@@ -221,13 +228,13 @@ end
 -- param item: item TYPE ID
 function fai_isbetterweapon(id,item)
 	local itemtier=fai_getweapontier(item)
-	local currenttier,currentitem=fai_getbesttier(id) -- gets the bot's current wep tier and weapon type id
+	local currentitem,currenttier=fai_getbesttier(id) -- gets the bot's current wep tier and weapon type id
 	
 	if itemtier == 0 then
 		return false
 	end
 	
-	if itemtier >= currenttier then
+	if itemtier <= currenttier then
 		return false
 	end
 	
