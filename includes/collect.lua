@@ -27,6 +27,10 @@ function fai_collect(id)
 						-- Primary
 						if not fai_playerslotitems(id,1) and player(id,"team")~=3 then
 							collect=true
+						else -- bot already have a primary, check tier
+							if fai_isbetterweapon(id,itype) then
+								collect=true
+							end
 						end
 					elseif slot==2 then
 						-- Secondary
@@ -139,4 +143,96 @@ function fai_collect(id)
 			end
 		end
 	end
+end
+
+-- returns the tier of the given weapon
+function fai_getweapontier(weapon)
+	local tier=0
+	
+	if weapon == 10 or weapon == 11 then -- Shotguns
+		tier=1
+	end
+	
+	if weapon >= 20 and weapon <= 24 then -- SMGs
+		tier=2
+	end
+	
+	if weapon >= 30 and weapon <= 39 then -- Rifles + Snipers
+		tier=3
+	end
+	
+	if weapon >= 46 and weapon <= 49 then -- Specials
+		tier=4
+	end
+	
+	if weapon == 90 or weapon == 91 then -- M134 and FN F2000
+		tier=4
+	end
+	
+	if weapon == 45 then -- Laser
+		tier=5
+	end
+	
+	return tier
+end
+
+-- returns the best weapon the bot have
+function fai_getbesttier(id)
+	local weaponstable=playerweapons(id)
+	local tier=0
+	
+	for _, value in pairs(weaponstable) do
+		if value == 10 or value == 11 then
+			tier=1
+			break
+		end
+		
+		if value >= 20 and value <= 24 then
+			tier=2
+			break
+		end
+		
+		if value >= 30 and value <= 39 then
+			tier=3
+			break
+		end
+		
+		if value >= 46 and value <= 49 then
+			tier=4
+			break
+		end
+		
+		if value == 90 or value == 91 then
+			tier=4
+			break
+		end
+		
+		if value == 45 then
+			tier=5
+			break
+		end
+	end
+
+	return value,tier
+end
+
+-- returns true if it's a better weapon
+-- param id: bot ID
+-- param item: item TYPE ID
+function fai_isbetterweapon(id,item)
+	local itemtier=fai_getweapontier(item)
+	local currenttier,currentitem=fai_getbesttier(id) -- gets the bot's current wep tier and weapon type id
+	
+	if itemtier == 0 then
+		return false
+	end
+	
+	if itemtier >= currenttier then
+		return false
+	end
+	
+	
+	ai_selectweapon(id,currentitem)
+	ai_drop(id)
+	return true
 end
