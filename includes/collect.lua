@@ -108,10 +108,10 @@ function fai_collect(id)
 						elseif itype==60 and player(id,"gasmask")==false then
 							-- Collect gas mask
 							collect=true
-						elseif itype==61 and fai_lowonammo(id)==true then
+						elseif itype==61 and fai_lowonammo(id,0)==true then
 							-- Collect primary ammo
 							collect=true
-						elseif itype==62 and fai_lowonammo(id)==true then
+						elseif itype==62 and fai_lowonammo(id,1)==true then
 							-- Collect secondary ammo
 							collect=true
 						end
@@ -242,4 +242,135 @@ function fai_isbetterweapon(id,item)
 	ai_selectweapon(id,currentitem)
 	ai_drop(id)
 	return true
+end
+
+-- returns the bot's primary weapon
+function fai_getprimaryweapon(id)
+	local weaponstable=playerweapons(id)
+	local weapon=0
+	
+	for _, value in pairs(weaponstable) do
+		if value == 10 or value == 11 then
+			weapon=value
+			break
+		end
+		
+		if value >= 20 and value <= 24 then
+			weapon=value
+			break
+		end
+		
+		if value >= 30 and value <= 39 then
+			weapon=value
+			break
+		end
+		
+		if value >= 46 and value <= 49 then
+			weapon=value
+			break
+		end
+		
+		if value == 90 or value == 91 then
+			weapon=value
+			break
+		end
+		
+		if value == 45 then
+			weapon=value
+			break
+		end
+	end
+
+	return weapon
+end
+
+-- returns the bot's secondary weapon
+function fai_getsecondaryweapon(id)
+	local weaponstable=playerweapons(id)
+	local weapon=0
+	
+	for _, value in pairs(weaponstable) do
+		if value == 1 or value == 6 then
+			weapon=value
+			break
+		end
+	end
+
+	return weapon
+end
+
+-- check if a bot is low on ammo, used to collect ammo boxes
+-- params: id = bot ID | type = 0 for primary, 1 for secondary
+function fai_lowonammo(id,type)
+	local weaponType=0
+	local ammoIn,ammo=0
+	local weaponType=0
+	
+	if type == 0 then
+		weaponType=fai_getprimaryweapon(id)
+	else
+		weaponType=fai_getsecondaryweapon(id)
+	end
+	
+	local ammoIn,ammo=playerammo(id,weaponType)
+	
+	if playerammo(id,weaponType)==false then -- false, the BOT doesn't have this weapon
+		return false
+	end
+	
+	if ammoIn==nil then
+		return false
+	end
+	
+	if ammo==nil then
+		return false
+	end
+	
+	if vai_set_debug==1 then
+		print("BOT "..player(id,"name").." has ammo in: "..ammoIn..", ammo: "..ammo.."")
+	end
+	
+	if weaponType>=1 and weaponType<=6 then -- IDs of weapon (secondary) with ammo
+		if ammo<25 then
+			return true
+		end
+	elseif weaponType==10 or weaponType==11 then -- shotguns
+		if ammo<10 then
+			return true
+		end
+	elseif weaponType>=20 and weaponType<=24 then -- SMGs
+		if ammo<40 then
+			return true
+		end
+	elseif weaponType>=30 and weaponType<=39 then -- Rifles
+		if ammo<15 then
+			return true
+		end
+	elseif weaponType== 40 or weaponType== 46 then
+		if ammo<50 then
+			return true
+		end
+	elseif weaponType== 45 then
+		if ammo<10 then
+			return true
+		end
+	elseif weaponType== 47 then
+		if ammo<2 then
+			return true
+		end
+	elseif weaponType== 48 or weaponType== 49 then
+		if ammo<20 then
+			return true
+		end
+	elseif weaponType== 90 then
+		if ammo<100 then
+			return true
+		end
+	elseif weaponType== 91 then
+		if ammo<30 then
+			return true
+		end
+	end
+	
+	return false
 end
