@@ -218,6 +218,12 @@ function fai_getbesttier(id)
 			weapon=value
 			break
 		end
+		
+		if value == 40 then -- m249
+			tier=3
+			weapon=value
+			break
+		end
 	end
 
 	return weapon,tier
@@ -265,7 +271,7 @@ function fai_getprimaryweapon(id)
 			break
 		end
 		
-		if value >= 46 and value <= 49 then
+		if value >= 45 and value <= 49 then
 			weapon=value
 			break
 		end
@@ -275,7 +281,7 @@ function fai_getprimaryweapon(id)
 			break
 		end
 		
-		if value == 45 then
+		if value == 40 then -- m249
 			weapon=value
 			break
 		end
