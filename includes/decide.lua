@@ -248,7 +248,7 @@ function fai_decide(id)
 							vai_destx[id],vai_desty[id]=randomentity(19) -- info_botnode
 							vai_mode[id]=2
 						else
-							vai_destx[id],vai_desty[id]=randomentity(1) -- info_ct
+							vai_destx[id],vai_desty[id]=randomentity(0) -- info_t
 							vai_mode[id]=2
 						end
 					end
@@ -278,7 +278,7 @@ function fai_decide(id)
 							vai_destx[id],vai_desty[id]=randomentity(19) -- info_botnode
 							vai_mode[id]=2
 						else
-							vai_destx[id],vai_desty[id]=randomentity(0) -- info_t
+							vai_destx[id],vai_desty[id]=randomentity(1) -- info_ct
 							vai_mode[id]=2
 						end
 					end
@@ -316,7 +316,7 @@ function fai_decide(id)
 						vai_destx[id],vai_desty[id]=randomentity(19) -- info_botnode
 						vai_mode[id]=2
 					else
-						vai_destx[id],vai_desty[id]=randomentity(1) -- info_ct
+						vai_destx[id],vai_desty[id]=randomentity(0) -- info_t
 						vai_mode[id]=2
 					end
 				elseif r==3 then
@@ -336,7 +336,7 @@ function fai_decide(id)
 						vai_destx[id],vai_desty[id]=randomentity(19) -- info_botnode
 						vai_mode[id]=2
 					else
-						vai_destx[id],vai_desty[id]=randomentity(0) -- info_t
+						vai_destx[id],vai_desty[id]=randomentity(1) -- info_ct
 						vai_mode[id]=2
 					end
 				elseif r==3 then
