@@ -162,6 +162,35 @@ function fai_randommaptile(id)
 	end
 end
 
+-- returns the destination to random adjacent tile
+function fai_getrandommaptile(id)
+	local x=-1
+	local y=-1
+	local rx=-1
+	local ry=-1
+	
+	-- 40 Search attempts
+	for i=1,40 do
+		-- Get coordinates of random adjacend tile
+		x=math.random(0,map("xsize"))
+		y=math.random(0,map("ysize"))
+		
+		-- It must not be the tile of the player...
+		if (x~=px or y~=py) then
+			-- ... and it must be walkable
+			if tile(x,y,"walkable") then
+				-- If all this is true, set it!
+				rx=x
+				ry=y
+				if vai_set_debug==1 then
+					print("fai_getrandommaptile returned x: "..x..", y: "..y.."")
+				end	
+				return rx,ry
+			end
+		end
+	end
+end
+
 -- sets the bot destx and desty to a random tile in a N radius of a specific origin
 -- the radius must always be negative
 function fai_gettilerandomradius(id, radius, x, y)

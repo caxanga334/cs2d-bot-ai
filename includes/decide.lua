@@ -242,6 +242,9 @@ function fai_decide(id)
 						-- Get Flag!
 						vai_destx[id],vai_desty[id]=randomentity(15,0,1) -- info_ctf (CT flag)
 						vai_mode[id]=2
+					elseif r==2 then
+						fai_randommaptile(id)
+						vai_mode[id]=2
 					else
 						-- Goto CT Spawn / Botnode
 						if map("botnodes")>0 and math.random(0,2)==1 then
@@ -271,6 +274,9 @@ function fai_decide(id)
 					if r==1 then
 						-- Get Flag!
 						vai_destx[id],vai_desty[id]=randomentity(15,0,0) -- info_ctf (T flag)
+						vai_mode[id]=2
+					elseif r==2 then
+						fai_randommaptile(id)
 						vai_mode[id]=2
 					else
 						-- Goto T Spawn / Botnode
