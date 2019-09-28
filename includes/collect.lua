@@ -131,6 +131,11 @@ function fai_collect(id)
 						collect=false -- item must be on an walkable tile
 					end
 					
+					-- so ai_goto works even with an invalid BOT ID.
+					if ai_goto(-1,item(items[i],"x"),item(items[i],"y"))==0 then
+						collect=false
+					end
+					
 					--Perform collect?
 					if collect then
 						vai_mode[id]=6
