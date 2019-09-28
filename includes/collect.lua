@@ -23,6 +23,7 @@ function fai_collect(id)
 					local itype=item(items[i],"type")
 					local slot=itemtype(itype,"slot")
 					local collect=false
+					local dropweapon=false
 					if slot==1 then
 						-- Primary
 						if not fai_playerslotitems(id,1) and player(id,"team")~=3 then
@@ -30,6 +31,7 @@ function fai_collect(id)
 						else -- bot already have a primary, check tier
 							if fai_isbetterweapon(id,itype) then
 								collect=true
+								dropweapon=true
 							end
 						end
 					elseif slot==2 then
@@ -135,6 +137,11 @@ function fai_collect(id)
 						vai_smode[id]=itype
 						vai_destx[id]=item(items[i],"x")
 						vai_desty[id]=item(items[i],"y")
+						if dropweapon then
+							local primarywep=fai_getprimaryweapon(id)
+							ai_selectweapon(id,primarywep)
+							ai_drop(id)
+						end
 						break
 					end
 					
@@ -257,10 +264,7 @@ function fai_isbetterweapon(id,item)
 	if itemtier <= currenttier then
 		return false
 	end
-	
-	
-	ai_selectweapon(id,currentitem)
-	ai_drop(id)
+
 	return true
 end
 
