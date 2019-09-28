@@ -239,6 +239,16 @@ function fai_isobjectenemy(plyteam, obteam, obtype)
 		return false
 	end
 	
+	-- Special case: VIP
+	if obteam==3 and plyteam==2 then
+		return false
+	end
+	
+	-- Special case: VIP
+	if obteam==2 and plyteam==3 then
+		return false
+	end
+	
 	if obteam==0 then -- NEUTRAL Team
 		if obtype == 7 or obtype == 9 or obtype == 15 then -- dispenser,supply,super supply
 			return false
