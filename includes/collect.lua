@@ -117,21 +117,20 @@ function fai_collect(id)
 						end
 					end
 					
+					local objectid = objectat(item(items[i],"x"), item(items[i],"y"))
+					if objectid > 0 then
+						local obtype=object(objectid, "type")
+						if fai_isobjectsolid(obtype) == true then
+							collect=false -- do not collect items inside solid objects
+						end
+					end
+					
+					if not tile(item(items[i],"x"), item(items[i],"y"), "walkable") then
+						collect=false -- item must be on an walkable tile
+					end
+					
 					--Perform collect?
 					if collect then
-						local objectid = objectat(item(items[i],"x"), item(items[i],"y"))
-						
-						if objectid > 0 then
-							local obtype=object(objectid, "type")
-							if fai_isobjectsolid(obtype) == true then
-								break -- do not collect items inside solid objects
-							end
-						end
-						
-						if not tile(item(items[i],"x"), item(items[i],"y"), "walkable") then -- item must be on an walkable tile
-							break
-						end
-						
 						vai_mode[id]=6
 						vai_smode[id]=itype
 						vai_destx[id]=item(items[i],"x")
