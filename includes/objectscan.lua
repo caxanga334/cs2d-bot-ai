@@ -174,7 +174,7 @@ function fai_upgradeobject(id,oid)
 		end
 	-- SUB MODE 1: Move closer to target object
 	elseif vai_smode[id] == 1 then
-		local angles=fai_angleto(player(id,"x"),player(id,"y"),object(oid,"x"),object(oid,"y"))
+		local angles=fai_angleto(player(id,"x"),player(id,"y"),object(oid,"x")+16,object(oid,"y")+16)
 		local aimx=object(oid,"x")+math.random(-1,1)+16
 		local aimy=object(oid,"y")+math.random(-1,1)+16
 		ai_aim(id,aimx,aimy)
