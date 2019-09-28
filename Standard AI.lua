@@ -27,6 +27,7 @@ dofile("bots/includes/buildwhere.lua")  -- decides where the bot will build
 dofile("bots/includes/build.lua")  		-- decides what the bot will build
 dofile("bots/includes/entityscan.lua")  -- scans and interacts with nearby entities
 dofile("bots/includes/objectscan.lua")  -- scans and interacts with nearby objects Note: This is for interacting with objects, not attacking then
+dofile("bots/includes/chat.lua")  		-- chat message handling
 
 -- Setting Cache
 vai_set_gm=0							-- Game Mode Setting (equals "sv_gamemode", Cache)
@@ -324,6 +325,17 @@ function ai_update_living(id)
 	elseif vai_mode[id]==62 then
 		-- ############################################################ 62: BUILD -> build something
 		fai_build(id)
+		
+	elseif vai_mode[id]==63 then
+		-- ############################################################ 63: BUILD TOLD -> build a specific building
+		local result=ai_goto(id,vai_destx[id],vai_desty[id])
+		if result==1 then -- bot arrived to destination
+			fai_build2(id, vai_smode[id])
+		elseif result==0 then -- failed to find path
+			vai_mode[id]=0
+		else
+			fai_walkaim(id)
+		end
 	
 	elseif vai_mode[id]==-1 then
 		-- ############################################################ -1: BUY -> buy equipment
@@ -365,5 +377,5 @@ end
 -- Parameter: msg = chat text message
 -- Parameter: teamonly = team only chat message (1) or public chat message (0)
 function ai_hear_chat(source,msg,teamonly)
-	-- This bot implementation simply ignores all chat messages
+	fai_chat(source,msg,teamonly)
 end

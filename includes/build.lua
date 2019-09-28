@@ -64,5 +64,34 @@ function fai_build(id)
 	-- finished building
 	vai_mode[id]=0
 	vai_smode[id]=0
-	ai_selectweapon(id,50)
+	local weapon=fai_getprimaryweapon(id)
+	if weapon~=0 then
+		ai_selectweapon(id,weapon)
+	else
+		ai_selectweapon(id,50)
+	end
+end
+
+-- builds a specific building
+function fai_build2(id, building)
+	local px=player(id,"tilex")
+	local py=player(id,"tiley")
+	local rx=math.random(-1,1)
+	local ry=math.random(-1,1)
+	local bx=px+rx
+	local by=py+ry
+
+	ai_selectweapon(id,74)
+	ai_build(id,building,bx,by)
+
+	-- finished building
+	vai_mode[id]=0
+	vai_smode[id]=0
+	local weapon=fai_getprimaryweapon(id)
+	if weapon~=0 then
+		ai_selectweapon(id,weapon)
+	else
+		ai_selectweapon(id,50)
+	end
+	
 end

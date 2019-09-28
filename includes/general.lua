@@ -353,9 +353,11 @@ function fai_findbpab(pid,oid)
 	local auxdist=0
 	local fx=-1
 	local fy=-1
+	local validpos=true
 	
 	for i=1,8 do -- tests 8 positions around the object
-	
+		
+		validpos=true
 		if i == 1 then
 			ix=-1
 			iy=-1
@@ -382,15 +384,25 @@ function fai_findbpab(pid,oid)
 			iy=1
 		end
 		
-		if tile(otx+ix,oty+iy, "walkable") then -- tile is walkable
-			if objectat(otx+ix,oty+iy) == 0 then -- no other objects at tile
-				auxdist = util_getdistance(ptx,pty,otx+ix,oty+iy)
-				
-				if auxdist < maxdist then
-					maxdist = auxdist
-					fx=otx+ix
-					fy=oty+iy
-				end
+		local oid=objectat(otx+ix,oty+iy)
+		
+		if not tile(otx+ix,oty+iy, "walkable") then -- tile is walkable
+			validpos=false
+		end
+		
+		if oid > 0 then
+			if fai_isobjectsolid(object(oid,"type")) then
+				validpos=false
+			end
+		end
+		
+
+		auxdist = util_getdistance(ptx,pty,otx+ix,oty+iy)	
+		if validpos then
+			if auxdist < maxdist then
+				maxdist = auxdist
+				fx=otx+ix
+				fy=oty+iy
 			end
 		end
 	end
@@ -398,8 +410,7 @@ function fai_findbpab(pid,oid)
 	if fx > -1 then
 		return fx,fy
 	else
-		print("fai_findbpab failed to get a tile around the object")
-		return ptx,pty
+		return -1,-1
 	end
 end
 
@@ -416,9 +427,11 @@ function fai_findbpab2(pid,oid)
 	local auxdist=0
 	local fx=-1
 	local fy=-1
+	local validpos=true
 	
 	for i=1,4 do -- tests 8 positions around the object
 	
+		validpos=true
 		if i == 1 then -- top
 			ix=0
 			iy=-1
@@ -433,15 +446,25 @@ function fai_findbpab2(pid,oid)
 			iy=0
 		end
 		
-		if tile(otx+ix,oty+iy, "walkable") then -- tile is walkable
-			if objectat(otx+ix,oty+iy) == 0 then -- no other objects at tile
-				auxdist = util_getdistance(ptx,pty,otx+ix,oty+iy)
-				
-				if auxdist < maxdist then
-					maxdist = auxdist
-					fx=otx+ix
-					fy=oty+iy
-				end
+		local oid=objectat(otx+ix,oty+iy)
+		
+		if not tile(otx+ix,oty+iy, "walkable") then -- tile is walkable
+			validpos=false
+		end
+		
+		if oid > 0 then
+			if fai_isobjectsolid(object(oid,"type")) then
+				validpos=false
+			end
+		end
+		
+
+		auxdist = util_getdistance(ptx,pty,otx+ix,oty+iy)	
+		if validpos then
+			if auxdist < maxdist then
+				maxdist = auxdist
+				fx=otx+ix
+				fy=oty+iy
 			end
 		end
 	end
@@ -449,7 +472,6 @@ function fai_findbpab2(pid,oid)
 	if fx > -1 then
 		return fx,fy
 	else
-		print("fai_findbpab failed to get a tile around the object")
-		return ptx,pty
+		return -1,-1
 	end
 end

@@ -21,7 +21,7 @@ function fai_scanforentity(id)
 		vai_entityscan[id]=math.random(200,400)
 		
 		-- mode check
-		if vai_mode[id]~=20 or vai_mode[id]~=21 or vai_mode[id]~=22 or vai_mode[id]~=23 or vai_mode[id]~=11 or vai_mode[id]~=12 then
+		if vai_mode[id]~=4 and vai_mode[id]~=20 and vai_mode[id]~=21 and vai_mode[id]~=22 and vai_mode[id]~=23 and vai_mode[id]~=24 and vai_mode[id]~=11 and vai_mode[id]~=12 and vai_mode[id]~=63 then
 			local elist=entitylist(93) -- scans for Trigger_Use
 			for _,e in pairs(elist) do
 				ex=e.x -- entity tile
