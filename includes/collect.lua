@@ -152,24 +152,44 @@ function fai_getweapontier(weapon)
 		tier=1
 	end
 	
-	if weapon >= 20 and weapon <= 24 then -- SMGs
+	if weapon == 21 or weapon == 23 then -- SMGs
 		tier=2
 	end
 	
-	if weapon >= 30 and weapon <= 39 then -- Rifles + Snipers
+	if weapon == 20 or weapon == 22 or weapon == 24 then -- SMGs
 		tier=3
 	end
 	
-	if weapon >= 46 and weapon <= 49 then -- Specials
+	if weapon == 34 then -- Scout
 		tier=4
+	end
+	
+	if weapon == 38 or weapon == 39 then -- Galil + Famas
+		tier=4
+	end
+	
+	if weapon == 40 then -- M249
+		tier=4
+	end
+	
+	if weapon >= 30 and weapon <= 33 then -- Rifles
+		tier=5
+	end
+
+	if weapon >= 35 and weapon <= 37 then -- Snipers
+		tier=5
+	end
+	
+	if weapon >= 46 and weapon <= 49 then -- Specials
+		tier=6
 	end
 	
 	if weapon == 90 or weapon == 91 then -- M134 and FN F2000
-		tier=4
+		tier=6
 	end
 	
 	if weapon == 45 then -- Laser
-		tier=5
+		tier=7
 	end
 	
 	return tier
@@ -183,47 +203,42 @@ function fai_getbesttier(id)
 	
 	for _, value in pairs(weaponstable) do
 		if value == 10 or value == 11 then
-			tier=1
 			weapon=value
 			break
 		end
 		
 		if value >= 20 and value <= 24 then
-			tier=2
 			weapon=value
 			break
 		end
 		
 		if value >= 30 and value <= 39 then
-			tier=3
 			weapon=value
 			break
 		end
 		
 		if value >= 46 and value <= 49 then
-			tier=4
 			weapon=value
 			break
 		end
 		
 		if value == 90 or value == 91 then
-			tier=4
 			weapon=value
 			break
 		end
 		
 		if value == 45 then
-			tier=5
 			weapon=value
 			break
 		end
 		
 		if value == 40 then -- m249
-			tier=3
 			weapon=value
 			break
 		end
 	end
+	
+	tier=fai_getweapontier(weapon)
 
 	return weapon,tier
 end
