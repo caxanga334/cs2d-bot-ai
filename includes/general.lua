@@ -239,21 +239,23 @@ function fai_isobjectenemy(plyteam, obteam, obtype)
 		return false
 	end
 	
-	if obteam~=plyteam then -- the object is not from the BOT's Team
-		if obteam==0 then -- neutral Team
-			if obtype==7 or obtype==9 then -- neutral dispenser and supply
-				return false
-			elseif obtype==1 or obtype>=3 and obtype<=5 or obtype==8 or obtype==11 or obtype==12 then -- neutral barricade,walls and turret
-				return true
-			else
-				return false
-			end
-		else -- object is NOT neutral and is NOT from our Team
-			if fai_isobjectsolid(obtype) then
-				return true
-			else
-				return false
-			end
+	if obteam==0 then -- NEUTRAL Team
+		if obtype == 7 or obtype == 9 or obtype == 15 then -- dispenser,supply,super supply
+			return false
+		elseif obtype == 8 or obtype == 10 or obtype == 11 or obtype == 12 then -- turrets
+			return true
+		elseif obtype == 1 or obtype >= 3 and obtype <= 5 then -- barricade + walls
+			return true
+		else
+			return false
+		end
+	end
+	
+	if plyteam ~= obteam then
+		if fai_isobjectsolid(obtype) then
+			return true
+		else
+			return false
 		end
 	end
 end
@@ -316,16 +318,13 @@ function fai_findobjtarget(id)
 		local obteam=object(oid,"team")
 		
 		-- enemy check
-		if fai_isobjectenemy(plyteam,obteam,obtype) == false then
-			return 0
+		if fai_isobjectenemy(plyteam,obteam,obtype) then
+			dth=util_getdistance(ptx,pty,ox,oy)
+			if dth < std then
+				std=dth
+				targetid=oid
+			end
 		end
-		
-		dth=util_getdistance(ptx,pty,ox,oy)
-		if dth < std then
-			std=dth
-			targetid=id
-		end
-		
 	end
 	
 	return targetid

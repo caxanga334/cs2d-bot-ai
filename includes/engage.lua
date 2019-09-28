@@ -3,14 +3,7 @@
 function fai_engage(id)
 
 	-- ############################################################ Find Target
-	local px=player(id,"tilex")
-	local py=player(id,"tiley")
-	local sx=0 -- shortest x
-	local sy=0 -- shortest y
-	local cx=0 -- position of the closest object
-	local cy=0
 	local npc=false
-	local iniobj=0
 	
 	vai_reaim[id]=vai_reaim[id]-1
 	if vai_reaim[id]<0 then
@@ -88,8 +81,12 @@ function fai_engage(id)
 				vai_objy[id]=y2
 				local x3,y3=fai_objflcorrection(x1,y1,x2,y2)
 				
+				if object(vai_targetobj[id],"type") == 30 then
+					npc = true
+				end
+				
 				-- In Range?
-				if math.abs(x1-x2)<420 and math.abs(y1-y2)<235 then
+				if math.abs(x1-x2)<1280 and math.abs(y1-y2)<720 then
 					-- Freeline Scan
 					vai_rescan[id]=vai_rescan[id]-1
 					if vai_rescan[id]<0 then
@@ -97,11 +94,11 @@ function fai_engage(id)
 						if math.abs(x1-x2)>30 or math.abs(y1-y2)>30 then 
 							if npc==true then
 								if not ai_freeline(id,x2-16,y2-16) then
-									vai_target[id]=-1
+									vai_targetobj[id]=0
 								end								
 							else
 								if not ai_freeline(id,x3,y3) then
-									vai_target[id]=-1
+									vai_targetobj[id]=0
 								end							
 							end
 						end
@@ -134,7 +131,6 @@ function fai_engage(id)
 		vai_aimy[id]=object(vai_targetobj[id],"y")+16
 		-- Switch to Fight Mode
 		if vai_mode[id]~=4 and vai_mode[id]~=5 and vai_mode[id]~=30 and vai_mode[id]~=31 and vai_mode[id]~=32 then
-			print("BOT is engaging an object! ID: "..vai_targetobj[id].."")
 			vai_mode[id]=30
 		end
 	end
