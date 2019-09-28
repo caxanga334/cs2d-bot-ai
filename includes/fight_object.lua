@@ -28,8 +28,6 @@ function fai_enganeobject(id)
 end
 
 function fai_rangedobject(id)
-	ai_iattack(id)
-	
 	vai_timer[id]=vai_timer[id]-1
 	if vai_timer[id]<=0 then
 		vai_timer[id]=math.random(50,150)
@@ -49,6 +47,7 @@ function fai_rangedobject(id)
 			end
 
 			ai_aim(id,vai_aimx[id],vai_aimy[id])
+			ai_iattack(id)
 		
 			-- melee combat?
 			if itemtype(player(id,"weapontype"),"range")<50 then
