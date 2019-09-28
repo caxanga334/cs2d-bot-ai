@@ -44,7 +44,7 @@ function fai_engage(id)
 				local y2=player(vai_target[id],"y")
 				
 				-- In Range?
-				if math.abs(x1-x2)<420 and math.abs(y1-y2)<235 then
+				if math.abs(x1-x2)<720 and math.abs(y1-y2)<435 then
 					-- Freeline Scan
 					vai_rescan[id]=vai_rescan[id]-1
 					if vai_rescan[id]<0 then

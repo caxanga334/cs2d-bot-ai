@@ -402,3 +402,54 @@ function fai_findbpab(pid,oid)
 		return ptx,pty
 	end
 end
+
+-- find best position around object (no diagonal)
+-- player ID, object ID
+function fai_findbpab2(pid,oid)
+	local ptx=player(pid,"tilex")
+	local pty=player(pid,"tiley")
+	local otx=object(oid,"tilex")
+	local oty=object(oid,"tiley")
+	local ix=0
+	local iy=0
+	local maxdist=999999
+	local auxdist=0
+	local fx=-1
+	local fy=-1
+	
+	for i=1,4 do -- tests 8 positions around the object
+	
+		if i == 1 then -- top
+			ix=0
+			iy=-1
+		elseif i == 2 then -- bottom
+			ix=0
+			iy=1
+		elseif i == 3 then -- left
+			ix=-1
+			iy=0
+		elseif i == 4 then -- right
+			ix=1
+			iy=0
+		end
+		
+		if tile(otx+ix,oty+iy, "walkable") then -- tile is walkable
+			if objectat(otx+ix,oty+iy) == 0 then -- no other objects at tile
+				auxdist = util_getdistance(ptx,pty,otx+ix,oty+iy)
+				
+				if auxdist < maxdist then
+					maxdist = auxdist
+					fx=otx+ix
+					fy=oty+iy
+				end
+			end
+		end
+	end
+	
+	if fx > -1 then
+		return fx,fy
+	else
+		print("fai_findbpab failed to get a tile around the object")
+		return ptx,pty
+	end
+end

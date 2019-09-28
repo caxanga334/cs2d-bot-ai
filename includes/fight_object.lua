@@ -18,7 +18,7 @@ function fai_enganeobject(id)
 				vai_cache[id]=math.random(0,360)
 				vai_mode[id]=32
 			else
-				vai_destx[id],vai_desty[id]=fai_findbpab(id,vai_targetobj[id])
+				vai_destx[id],vai_desty[id]=fai_findbpab2(id,vai_targetobj[id])
 				vai_mode[id]=31
 			end
 		else
@@ -56,7 +56,7 @@ function fai_rangedobject(id)
 						vai_mode[id]=0
 					end
 				else
-					vai_destx[id],vai_desty[id]=fai_findbpab(id,vai_targetobj[id])
+					vai_destx[id],vai_desty[id]=fai_findbpab2(id,vai_targetobj[id])
 					vai_mode[id]=31				
 				end
 			else
@@ -86,7 +86,7 @@ function fai_meleeobject(id)
 				vai_destx[id]=object(vai_targetobj[id],"tilex")
 				vai_desty[id]=object(vai_targetobj[id],"tiley")
 			else
-				vai_destx[id],vai_desty[id]=fai_findbpab(id,vai_targetobj[id])
+				vai_destx[id],vai_desty[id]=fai_findbpab2(id,vai_targetobj[id])
 			end
 			
 			local rnd=math.random(-2,2)

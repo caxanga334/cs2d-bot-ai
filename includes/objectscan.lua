@@ -8,13 +8,20 @@ function fai_scanforobject(id)
 	local health=player(id,"health")
 	local maxhealth=player(id,"maxhealth")
 	local money=player(id,"money")
+	local weaponstable=playerweapons(id)
+	local canupgrade=false
+	
+	-- checks if the bot contains a wrench
+	if fai_contains(weaponstable,74) and money > 8000 then
+		canupgrade=true
+	end
 
 	-- Scan Timer
 	vai_objectscan[id]=vai_objectscan[id]+-1
 	if vai_objectscan[id]<=0 then -- timer is 0 and bot is not already using something.
 		vai_objectscan[id]=math.random(150,350)
 		
-		if vai_mode[id]~=21 or vai_mode[id]~=22 or vai_mode[id]~=23 or vai_mode[id]~=20 then
+		if vai_mode[id]~=21 or vai_mode[id]~=22 or vai_mode[id]~=23 or vai_mode[id]~=20 or vai_mode[id]~=24 then
 		
 			local objectlist=closeobjects(player(id,"x"),player(id,"y"),256) -- 8 tiles range
 			health = health + 20 -- health tolerance
@@ -30,14 +37,17 @@ function fai_scanforobject(id)
 				if obteam==pteam then -- object must be from our team
 					if obtype==7 then -- dispenser
 						if health < maxhealth or money < 16000 then -- check if bot needs to use a dispenser
-							fai_gotoobject(id, obx, oby, obtype, obj)
+							fai_gotoobject(id, obx, oby, obtype, obj, 0)
 							break
 						end
 					elseif obtype==13 then -- teleporter entrance
 						if obmode==1 then -- teleporter is ready
-							fai_gotoobject(id, obx, oby, obtype, obj)
+							fai_gotoobject(id, obx, oby, obtype, obj, 0)
 							break
 						end
+					elseif obtype==8 or obtype==11 or obtype==9 and canupgrade then -- turrets and supply
+						fai_gotoobject(id, obx, oby, obtype, obj, 1)
+						break
 					end
 				end
 			end
@@ -45,19 +55,22 @@ function fai_scanforobject(id)
 	end
 end
 
-function fai_gotoobject(id, obx, oby, obtype, obj)
+function fai_gotoobject(id, obx, oby, obtype, obj, side)
 	-- this function receives the object position but some objects are solid
 	local finalx=-1
 	local finaly=-1
 	local solid=false -- can the bot walk over the object?
-	local found=false -- true when we found a valid position
 	
 	if obtype==7 then
 		solid=true -- dispenser is solid
 	end
 	
 	if solid==true then -- change the final destination to the side of the object
-		finalx,finaly=fai_findbpab(id,obj)
+		if side == 0 then
+			finalx,finaly=fai_findbpab(id,obj)
+		else
+			finalx,finaly=fai_findbpab2(id,obj) -- no diagonals
+		end
 	else
 		finalx=obx
 		finaly=oby
@@ -66,8 +79,12 @@ function fai_gotoobject(id, obx, oby, obtype, obj)
 	if finalx~=-1 then
 		if obtype== 13 then	-- tele entrance
 			vai_mode[id]=23 -- special for teleporters
-			vai_smode[id]=obj -- smode should store the teleporter ID		
-		else
+			vai_smode[id]=obj -- smode should store the teleporter ID
+		elseif obtype==8 or obtype==11 or obtype==9 then
+			vai_mode[id]=24 -- upgrade object
+			vai_smode[id]=0
+			vai_cache[id]=obj -- object ID
+		else -- dispenser
 			vai_mode[id]=21
 			vai_smode[id]=obtype -- smode should store the object type
 		end
@@ -120,5 +137,57 @@ function fai_checkteleport(id, obj)
 		end
 	else
 		fai_usetele(id) -- teleport does not exists, reset
+	end
+end
+
+-- make bots upgrade an object
+function fai_upgradeobject(id,oid)
+
+	if not object(oid, "exists") then
+		vai_mode[id]=0
+	end
+	
+	if object(oid, "health") < 1 then
+		vai_mode[id]=0
+	end
+	
+	local objecttype=object(oid, "type")
+	if objecttype == 12 or objecttype == 15 then
+		vai_mode[id]=0
+	end
+	
+	if player(id, "money") < 6000 then
+		vai_mode[id]=0
+	end
+
+	vai_destx[id],vai_desty[id]=fai_findbpab2(id,oid)
+	
+	-- SUB MODE 0: Go to target object
+	if vai_smode[id] == 0 then
+		local result=ai_goto(id,vai_destx[id],vai_desty[id])
+		if result == 0 then -- failed to find path
+			vai_mode[id]=0
+		elseif result == 1 then -- bot reached it's destination
+			vai_smode[id]=1
+		else
+			fai_walkaim(id)
+		end
+	-- SUB MODE 1: Move closer to target object
+	elseif vai_smode[id] == 1 then
+		local angles=fai_angleto(player(id,"x"),player(id,"y"),object(oid,"x"),object(oid,"y"))
+		local aimx=object(oid,"x")+math.random(-1,1)+16
+		local aimy=object(oid,"y")+math.random(-1,1)+16
+		ai_aim(id,aimx,aimy)
+		local result=ai_move(id,angles)
+		if result == 0 then -- bot reached target object
+			vai_smode[id]=2
+		end
+	-- SUB MODE 2: Upgrade the object
+	elseif vai_smode[id] == 2 then
+		local aimx=object(oid,"x")+math.random(-1,1)+16
+		local aimy=object(oid,"y")+math.random(-1,1)+16
+		ai_selectweapon(id,74)
+		ai_aim(id,aimx,aimy)
+		ai_attack(id)
 	end
 end

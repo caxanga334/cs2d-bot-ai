@@ -272,6 +272,10 @@ function ai_update_living(id)
 		end
 		fai_checkteleport(id, vai_smode[id])
 		
+	elseif vai_mode[id]==24 then
+		-- ############################################################ 24: UPGRADE OBJECT -> bot is using upgrading an object
+		fai_upgradeobject(id,vai_cache[id])
+		
 	elseif vai_mode[id]==30 then
 		-- ############################################################ 30: FOUND OBJECT -> the bot found an object, decide what to do.
 		fai_enganeobject(id)
