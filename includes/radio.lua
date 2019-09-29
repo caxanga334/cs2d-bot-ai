@@ -87,6 +87,19 @@ function fai_radio(source,radio)
 		if mate~=0 then
 			vai_radioanswer[mate]=26
 			vai_radioanswert[mate]=math.random(35,100)
+			if vai_mode[mate] == 2 then
+				ai_sayteam(mate, "Going to destination")
+			elseif vai_mode[mate] == 4 then
+				ai_sayteam(mate, "In combat")
+			elseif vai_mode[mate] == 6 then
+				ai_sayteam(mate, "Going to collect item")
+			elseif vai_mode[mate] == 22 then
+				ai_sayteam(mate, "Using a dispenser")
+			elseif vai_mode[mate] == 24 then
+				ai_sayteam(mate, "Upgrading a building")
+			elseif vai_mode[mate] == 61 or vai_mode[mate] == 63 then
+				ai_sayteam(mate, "Going to build something")
+			end
 		end
 	end
 end

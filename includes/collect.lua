@@ -130,25 +130,22 @@ function fai_collect(id)
 					
 					if not tile(item(items[i],"x"), item(items[i],"y"), "walkable") then
 						collect=false -- item must be on an walkable tile
-					else
-						local nodes={}
-						nodes[1]={}
-						nodes[1].x=player(id,"tilex")
-						nodes[1].y=player(id,"tiley")
-						nodes[2]={}
-						nodes[2].x=item(items[i],"x")
-						nodes[2].y=item(items[i],"y")
-						
-						local r=search(nodes[1],nodes[2])
-						if r == nil then
-							collect=false
-						end						
+					end
+					
+					if not fai_isitemreachable(id,items[i]) then
+						collect=false
+						fai_itempathfailed(id,items[i]) -- update try count
 					end
 					
 					--Perform collect?
 					if collect then
+						if math.random(1,100)>85 then
+							local iname=item(items[i],"name")
+							ai_sayteam(id,"I'm going to pick up a "..iname)
+						end
 						vai_mode[id]=6
 						vai_smode[id]=itype
+						vai_cache[id]=items[i] -- cache item ID
 						vai_destx[id]=item(items[i],"x")
 						vai_desty[id]=item(items[i],"y")
 						if dropweapon then
@@ -411,4 +408,70 @@ function fai_lowonammo(id,type)
 	end
 	
 	return false
+end
+
+function fai_itempathfailed(id,item)
+	local index=0
+	if player(id,"team") == 1 then
+		if fai_contains(gai_tuitems,item) then
+			index = fai_gettableindex(gai_tuitems,item)
+			if gai_tuitemstries[index] == nil then
+				gai_tuitemstries[index] = 1
+			else
+				gai_tuitemstries[index] = gai_tuitemstries[index] + 1
+			end
+		else
+			index=tablelength(gai_tuitems)
+			gai_tuitems[index] = item
+			if gai_tuitemstries[index] == nil then
+				gai_tuitemstries[index] = 1
+			else
+				gai_tuitemstries[index] = gai_tuitemstries[index] + 1
+			end
+			-- reset after a few tries
+			if gai_tuitemstries[index] > 100 then -- this is shared and the number can raise very fast
+				gai_tuitemstries[index] = nil
+				gai_tuitems[index] = nil
+			end
+		end
+	elseif player(id,"team") == 2 or player(id,"team") == 3 then
+		if fai_contains(gai_ctuitems,item) then
+			index = fai_gettableindex(gai_ctuitems,item)
+			if gai_ctuitemstries[index] == nil then
+				gai_ctuitemstries[index] = 1
+			else
+				gai_ctuitemstries[index] = gai_ctuitemstries[index] + 1
+			end
+			-- reset after a few tries
+			if gai_ctuitemstries[index] > 100 then -- this is shared and the number can raise very fast
+				gai_ctuitemstries[index] = nil
+				gai_ctuitems[index] = nil
+			end
+		else
+			index=tablelength(gai_ctuitems)
+			gai_ctuitems[index] = item
+			if gai_ctuitemstries[index] == nil then
+				gai_ctuitemstries[index] = 1
+			else
+				gai_ctuitemstries[index] = gai_ctuitemstries[index] + 1
+			end			
+		end		
+	end
+end
+
+function fai_isitemreachable(id,item)
+	local index=0
+	if player(id,"team") == 1 then
+		if fai_contains(gai_tuitems,item) then
+			return false
+		else
+			return true		
+		end
+	elseif player(id,"team") == 2 or player(id,"team") == 3 then
+		if fai_contains(gai_ctuitems,item) then
+			return false
+		else
+			return true		
+		end	
+	end
 end

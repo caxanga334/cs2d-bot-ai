@@ -6,7 +6,9 @@
 -- Used prefixes in this script                 --
 -- ai_ = AI function (AI API, invoked by CS2D)  --
 -- vai_ = AI variable                           --
--- fai_ = AI helper function                    --
+-- gai_ = AI global shared variable				--
+-- fai_ = AI helper function     				--
+--        										--
 --                                              --
 --------------------------------------------------
 
@@ -28,7 +30,6 @@ dofile("bots/includes/build.lua")  		-- decides what the bot will build
 dofile("bots/includes/entityscan.lua")  -- scans and interacts with nearby entities
 dofile("bots/includes/objectscan.lua")  -- scans and interacts with nearby objects Note: This is for interacting with objects, not attacking then
 dofile("bots/includes/chat.lua")  		-- chat message handling
-dofile("bots/includes/pathfinding.lua") -- Pathfinding Algorithm
 
 -- Setting Cache
 vai_set_gm=0							-- Game Mode Setting (equals "sv_gamemode", Cache)
@@ -37,6 +38,12 @@ vai_set_botweapons=0					-- Bot Weapons Setting (equals "bot_weapons", Cache)
 vai_set_debug=0							-- Debug Setting (equals "debugai", Cache)
 vai_set_disphealth=-1					-- health from dispenser
 fai_update_settings()
+
+-- Global Variables
+gai_tuitems = {} 						-- unreachable items T
+gai_tuitemstries = {} 
+gai_ctuitems = {} 						-- unreachable items CT
+gai_ctuitemstries = {}
 
 -- Per Player Variables
 vai_mode={}; vai_smode={}				-- current mode (state) and sub-mode (sub-state / parameter)
@@ -71,6 +78,14 @@ for i=1,32 do
 	vai_objectscan[i]=0
 	vai_buyingdone[i]=0
 	vai_radioanswer[i]=0; vai_radioanswert[i]=0
+end
+
+addhook("mapchange","cai_onmapchange")
+function cai_onmapchange(newmap)
+	fai_cleartable(gai_tuitems)
+	fai_cleartable(gai_tuitemstries)
+	fai_cleartable(gai_ctuitems)
+	fai_cleartable(gai_ctuitemstries)
 end
 
 -- "ai_onspawn" - AI On Spawn Function
@@ -200,9 +215,14 @@ function ai_update_living(id)
 		
 	elseif vai_mode[id]==6 then
 		-- ############################################################ 6: COLLECT -> collect item
-		if ai_goto(id,vai_destx[id],vai_desty[id])~=2 then
+		local result=ai_goto(id,vai_destx[id],vai_desty[id])
+		if result == 1 then
 			vai_mode[id]=0
 			vai_itemscan[id]=140
+		elseif result == 0 then -- path failed
+			vai_mode[id]=0
+			vai_itemscan[id]=400
+			fai_itempathfailed(id,vai_cache[id])
 		else
 			fai_walkaim(id)
 		end

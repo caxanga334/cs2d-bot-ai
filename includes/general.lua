@@ -42,6 +42,25 @@ function fai_contains(t,e)
 	return false
 end
 
+-- Returns the table t index of the given element e
+-- t: table
+-- e: element
+function fai_gettableindex(t,e)
+	for i, value in pairs(t) do
+		if value == e then
+			return i
+		end
+	end
+	return nil
+end
+
+-- Clears the given table
+-- t: table
+function fai_cleartable(t)
+	local count = #t
+	for i=0, count do t[i]=nil end
+end
+
 -- Check if player has item in certain slot
 -- id: player id
 -- slot: slot
@@ -474,4 +493,136 @@ function fai_findbpab2(pid,oid)
 	else
 		return -1,-1
 	end
+end
+
+-- find best position around position
+function fai_findbpapos(x1,y1,x2,y2)
+	local ix=0
+	local iy=0
+	local maxdist=999999
+	local auxdist=0
+	local fx=-1
+	local fy=-1
+	local validpos=true
+	
+	for i=1,8 do -- tests 8 positions around the object
+		
+		validpos=true
+		if i == 1 then
+			ix=-1
+			iy=-1
+		elseif i == 2 then
+			ix=0
+			iy=-1
+		elseif i == 3 then
+			ix=1
+			iy=-1
+		elseif i == 4 then
+			ix=-1
+			iy=0
+		elseif i == 5 then
+			ix=1
+			iy=0
+		elseif i == 6 then
+			ix=-1
+			iy=1
+		elseif i == 7 then
+			ix=0
+			iy=1
+		elseif i == 8 then
+			ix=1
+			iy=1
+		end
+		
+		local oid=objectat(x2+ix,y2+iy)
+		
+		if not tile(x2+ix,y2+iy, "walkable") then -- tile is walkable
+			validpos=false
+		end
+		
+		if oid > 0 then
+			if fai_isobjectsolid(object(oid,"type")) then
+				validpos=false
+			end
+		end
+		
+
+		auxdist = util_getdistance(x1,y1,x2+ix,y2+iy)	
+		if validpos then
+			if auxdist < maxdist then
+				maxdist = auxdist
+				fx=x2+ix
+				fy=y2+iy
+			end
+		end
+	end
+	
+	if fx > -1 then
+		return fx,fy
+	else
+		return -1,-1
+	end
+end
+
+-- find best position around position (no diagonal)
+function fai_findbpapos2(x1,y1,x2,y2)
+	local ix=0
+	local iy=0
+	local maxdist=999999
+	local auxdist=0
+	local fx=-1
+	local fy=-1
+	local validpos=true
+	
+	for i=1,4 do -- tests 8 positions around the object
+	
+		validpos=true
+		if i == 1 then -- top
+			ix=0
+			iy=-1
+		elseif i == 2 then -- bottom
+			ix=0
+			iy=1
+		elseif i == 3 then -- left
+			ix=-1
+			iy=0
+		elseif i == 4 then -- right
+			ix=1
+			iy=0
+		end
+		
+		local oid=objectat(x2+ix,y2+iy)
+		
+		if not tile(x2+ix,y2+iy, "walkable") then -- tile is walkable
+			validpos=false
+		end
+		
+		if oid > 0 then
+			if fai_isobjectsolid(object(oid,"type")) then
+				validpos=false
+			end
+		end
+		
+
+		auxdist = util_getdistance(x1,y1,x2+ix,y2+iy)	
+		if validpos then
+			if auxdist < maxdist then
+				maxdist = auxdist
+				fx=x2+ix
+				fy=y2+iy
+			end
+		end
+	end
+	
+	if fx > -1 then
+		return fx,fy
+	else
+		return -1,-1
+	end
+end
+
+function tablelength(T)
+  local count = 0
+  for _ in pairs(T) do count = count + 1 end
+  return count
 end
