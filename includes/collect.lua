@@ -24,6 +24,7 @@ function fai_collect(id)
 					local slot=itemtype(itype,"slot")
 					local collect=false
 					local dropweapon=false
+					
 					if slot==1 then
 						-- Primary
 						if not fai_playerslotitems(id,1) and player(id,"team")~=3 then
@@ -129,11 +130,19 @@ function fai_collect(id)
 					
 					if not tile(item(items[i],"x"), item(items[i],"y"), "walkable") then
 						collect=false -- item must be on an walkable tile
-					end
-					
-					-- so ai_goto works even with an invalid BOT ID.
-					if ai_goto(-1,item(items[i],"x"),item(items[i],"y"))==0 then
-						collect=false
+					else
+						local nodes={}
+						nodes[1]={}
+						nodes[1].x=player(id,"tilex")
+						nodes[1].y=player(id,"tiley")
+						nodes[2]={}
+						nodes[2].x=item(items[i],"x")
+						nodes[2].y=item(items[i],"y")
+						
+						local r=search(nodes[1],nodes[2])
+						if r == nil then
+							collect=false
+						end						
 					end
 					
 					--Perform collect?

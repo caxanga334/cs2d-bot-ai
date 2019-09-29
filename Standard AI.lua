@@ -28,6 +28,7 @@ dofile("bots/includes/build.lua")  		-- decides what the bot will build
 dofile("bots/includes/entityscan.lua")  -- scans and interacts with nearby entities
 dofile("bots/includes/objectscan.lua")  -- scans and interacts with nearby objects Note: This is for interacting with objects, not attacking then
 dofile("bots/includes/chat.lua")  		-- chat message handling
+dofile("bots/includes/pathfinding.lua") -- Pathfinding Algorithm
 
 -- Setting Cache
 vai_set_gm=0							-- Game Mode Setting (equals "sv_gamemode", Cache)
