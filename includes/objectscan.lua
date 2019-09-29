@@ -143,11 +143,7 @@ end
 -- make bots upgrade an object
 function fai_upgradeobject(id,oid)
 
-	if not object(oid, "exists") then
-		vai_mode[id]=0
-	end
-	
-	if object(oid, "health") < 1 then
+	if not object(oid, "exists") or object(oid, "health") < 1 then
 		vai_mode[id]=0
 	end
 	
