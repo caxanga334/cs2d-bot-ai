@@ -135,14 +135,14 @@ function fai_collect(id)
 					if not fai_isitemreachable(id,items[i]) then
 						collect=false
 						fai_itempathfailed(id,items[i]) -- update try count
+						if vai_set_debug == 1 then
+							local iname=item(items[i],"name")
+							print("item "..iname.." is not reachable")
+						end
 					end
 					
 					--Perform collect?
 					if collect then
-						if math.random(1,100)>85 then
-							local iname=item(items[i],"name")
-							ai_sayteam(id,"I'm going to pick up a "..iname)
-						end
 						vai_mode[id]=6
 						vai_smode[id]=itype
 						vai_cache[id]=items[i] -- cache item ID
@@ -410,46 +410,62 @@ function fai_lowonammo(id,type)
 	return false
 end
 
-function fai_itempathfailed(id,item)
+function fai_itempathfailed(id,itemid)
 	local index=0
 	if player(id,"team") == 1 then
-		if fai_contains(gai_tuitems,item) then
-			index = fai_gettableindex(gai_tuitems,item)
-			if gai_tuitemstries[index] == nil then
-				gai_tuitemstries[index] = 1
-			else
-				gai_tuitemstries[index] = gai_tuitemstries[index] + 1
-			end
-		else
-			index=tablelength(gai_tuitems)
-			gai_tuitems[index] = item
+		if fai_contains(gai_tuitems,itemid) then
+			index = fai_gettableindex(gai_tuitems,itemid)
 			if gai_tuitemstries[index] == nil then
 				gai_tuitemstries[index] = 1
 			else
 				gai_tuitemstries[index] = gai_tuitemstries[index] + 1
 			end
 			-- reset after a few tries
-			if gai_tuitemstries[index] > 100 then -- this is shared and the number can raise very fast
+			if gai_tuitemstries[index] > 60 then -- this is shared and the number can raise very fast
+				if vai_set_debug == 1 then
+					local iname=item(gai_tuitems[index],"name")
+					print("Item "..iname.." was removed from unreachable items table (T)")
+				end
 				gai_tuitemstries[index] = nil
 				gai_tuitems[index] = nil
 			end
+		else
+			index=tablelength(gai_tuitems)
+			gai_tuitems[index] = itemid
+			if vai_set_debug == 1 then
+				local iname=item(itemid,"name")
+				print("Item "..iname.." was added to unreachable items table (T)")
+			end
+			if gai_tuitemstries[index] == nil then
+				gai_tuitemstries[index] = 1
+			else
+				gai_tuitemstries[index] = gai_tuitemstries[index] + 1
+			end
 		end
 	elseif player(id,"team") == 2 or player(id,"team") == 3 then
-		if fai_contains(gai_ctuitems,item) then
-			index = fai_gettableindex(gai_ctuitems,item)
+		if fai_contains(gai_ctuitems,itemid) then
+			index = fai_gettableindex(gai_ctuitems,itemid)
 			if gai_ctuitemstries[index] == nil then
 				gai_ctuitemstries[index] = 1
 			else
 				gai_ctuitemstries[index] = gai_ctuitemstries[index] + 1
 			end
 			-- reset after a few tries
-			if gai_ctuitemstries[index] > 100 then -- this is shared and the number can raise very fast
+			if gai_ctuitemstries[index] > 60 then -- this is shared and the number can raise very fast
+				if vai_set_debug == 1 then
+					local iname=item(gai_ctuitems[index],"name")
+					print("Item "..iname.." was removed from unreachable items table (CT)")
+				end
 				gai_ctuitemstries[index] = nil
 				gai_ctuitems[index] = nil
 			end
 		else
 			index=tablelength(gai_ctuitems)
-			gai_ctuitems[index] = item
+			gai_ctuitems[index] = itemid
+			if vai_set_debug == 1 then
+				local iname=item(itemid,"name")
+				print("Item "..iname.." was added to unreachable items table (CT)")
+			end
 			if gai_ctuitemstries[index] == nil then
 				gai_ctuitemstries[index] = 1
 			else
