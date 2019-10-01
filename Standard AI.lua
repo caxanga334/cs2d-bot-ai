@@ -245,7 +245,7 @@ function ai_update_living(id)
 			vai_mode[id]=0
 		end
 		
-	elseif vai_mode[id]==2 then
+	elseif vai_mode[id]==9 then
 		-- ############################################################ 9: GOTO ORDER -> go to destination ordered by a human player
 		local result=ai_goto(id,vai_destx[id],vai_desty[id])
 		if result==1 then
