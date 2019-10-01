@@ -134,7 +134,6 @@ function fai_collect(id)
 					
 					if not fai_isitemreachable(id,items[i]) then
 						collect=false
-						fai_itempathfailed(id,items[i]) -- update try count
 						if vai_set_debug == 1 then
 							local iname=item(items[i],"name")
 							print("item "..iname.." is not reachable")
@@ -411,83 +410,75 @@ function fai_lowonammo(id,type)
 end
 
 function fai_itempathfailed(id,itemid)
-	local index=0
-	if player(id,"team") == 1 then
-		if fai_contains(gai_tuitems,itemid) then
-			index = fai_gettableindex(gai_tuitems,itemid)
-			if gai_tuitemstries[index] == nil then
-				gai_tuitemstries[index] = 1
-			else
-				gai_tuitemstries[index] = gai_tuitemstries[index] + 1
-			end
-			-- reset after a few tries
-			if gai_tuitemstries[index] > 60 then -- this is shared and the number can raise very fast
-				if vai_set_debug == 1 then
-					local iname=item(gai_tuitems[index],"name")
-					print("Item "..iname.." was removed from unreachable items table (T)")
-				end
-				gai_tuitemstries[index] = nil
-				gai_tuitems[index] = nil
-			end
-		else
-			index=tablelength(gai_tuitems)
-			gai_tuitems[index] = itemid
-			if vai_set_debug == 1 then
-				local iname=item(itemid,"name")
-				print("Item "..iname.." was added to unreachable items table (T)")
-			end
-			if gai_tuitemstries[index] == nil then
-				gai_tuitemstries[index] = 1
-			else
-				gai_tuitemstries[index] = gai_tuitemstries[index] + 1
-			end
+	local itemtype = item(itemid,"type")
+	local itemx = item(itemid,"x")
+	local itemy = item(itemid,"y")
+	
+	if player(id,"team") == 1 then -- T
+		if gai_tuitems[itemid] == nil then -- item does not exist in table
+			gai_tuitems[itemid] = {}
+			gai_tuitems[itemid].type = itemtype
+			gai_tuitems[itemid].x = itemx
+			gai_tuitems[itemid].y = itemy
+			gai_tuitems[itemid].tries = 1
 		end
-	elseif player(id,"team") == 2 or player(id,"team") == 3 then
-		if fai_contains(gai_ctuitems,itemid) then
-			index = fai_gettableindex(gai_ctuitems,itemid)
-			if gai_ctuitemstries[index] == nil then
-				gai_ctuitemstries[index] = 1
-			else
-				gai_ctuitemstries[index] = gai_ctuitemstries[index] + 1
-			end
-			-- reset after a few tries
-			if gai_ctuitemstries[index] > 60 then -- this is shared and the number can raise very fast
-				if vai_set_debug == 1 then
-					local iname=item(gai_ctuitems[index],"name")
-					print("Item "..iname.." was removed from unreachable items table (CT)")
-				end
-				gai_ctuitemstries[index] = nil
-				gai_ctuitems[index] = nil
-			end
-		else
-			index=tablelength(gai_ctuitems)
-			gai_ctuitems[index] = itemid
-			if vai_set_debug == 1 then
-				local iname=item(itemid,"name")
-				print("Item "..iname.." was added to unreachable items table (CT)")
-			end
-			if gai_ctuitemstries[index] == nil then
-				gai_ctuitemstries[index] = 1
-			else
-				gai_ctuitemstries[index] = gai_ctuitemstries[index] + 1
-			end			
-		end		
+	elseif player(id,"team") == 2 or player(id,"team") == 3 then -- CT
+		if gai_ctuitems[itemid] == nil then -- item does not exist in table
+			gai_ctuitems[itemid] = {}
+			gai_ctuitems[itemid].type = itemtype
+			gai_ctuitems[itemid].x = itemx
+			gai_ctuitems[itemid].y = itemy
+			gai_ctuitems[itemid].tries = 1
+		end
 	end
 end
 
-function fai_isitemreachable(id,item)
-	local index=0
+function fai_isitemreachable(id,itemid)
+	local itemtype = item(itemid,"type")
+	local itemx = item(itemid,"x")
+	local itemy = item(itemid,"y")
+	
 	if player(id,"team") == 1 then
-		if fai_contains(gai_tuitems,item) then
-			return false
+		if gai_tuitems[itemid] == nil then
+			return true
 		else
-			return true		
+			-- check item data
+			if gai_tuitems[itemid].type ~= itemtype then -- different item
+				gai_tuitems[itemid] = nil
+				return true
+			elseif gai_tuitems[itemid].x ~= itemx or gai_tuitems[itemid].y ~= itemy then -- different position
+				gai_tuitems[itemid] = nil
+				return true
+			end
+			-- check tries
+			if gai_tuitems[itemid].tries > 25 then
+				gai_tuitems[itemid] = nil
+				return true
+			else
+				gai_tuitems[itemid].tries = gai_tuitems[itemid].tries + 1
+				return false
+			end
 		end
 	elseif player(id,"team") == 2 or player(id,"team") == 3 then
-		if fai_contains(gai_ctuitems,item) then
-			return false
+		if gai_ctuitems[itemid] == nil then
+			return true
 		else
-			return true		
-		end	
+			-- check item data
+			if gai_ctuitems[itemid].type ~= itemtype then -- different item
+				gai_ctuitems[itemid] = nil
+				return true
+			elseif gai_ctuitems[itemid].x ~= itemx or gai_ctuitems[itemid].y ~= itemy then -- different position
+				gai_ctuitems[itemid] = nil
+				return true
+			end
+			-- check tries
+			if gai_ctuitems[itemid].tries > 25 then
+				gai_ctuitems[itemid] = nil
+				return true
+			else
+				gai_ctuitems[itemid].tries = gai_ctuitems[itemid].tries + 1
+				return false
+			end
+		end
 	end
 end

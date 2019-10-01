@@ -80,12 +80,16 @@ for i=1,32 do
 	vai_radioanswer[i]=0; vai_radioanswert[i]=0
 end
 
-addhook("mapchange","cai_onmapchange")
-function cai_onmapchange(newmap)
+addhook("mapchange","hai_onmapchange")
+function hai_onmapchange(newmap)
 	fai_cleartable(gai_tuitems)
-	fai_cleartable(gai_tuitemstries)
 	fai_cleartable(gai_ctuitems)
-	fai_cleartable(gai_ctuitemstries)
+end
+
+addhook("startround","hai_onstartround")
+function hai_onstartround(mode)
+	fai_cleartable(gai_tuitems)
+	fai_cleartable(gai_ctuitems)
 end
 
 -- "ai_onspawn" - AI On Spawn Function
