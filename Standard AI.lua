@@ -245,6 +245,35 @@ function ai_update_living(id)
 			vai_mode[id]=0
 		end
 		
+	elseif vai_mode[id]==2 then
+		-- ############################################################ 9: GOTO ORDER -> go to destination ordered by a human player
+		local result=ai_goto(id,vai_destx[id],vai_desty[id])
+		if result==1 then
+			if vai_smode[id] == 0  then -- camp/defend request
+				vai_mode[id]=1
+				vai_timer[id]=math.random(200,800)				
+			elseif vai_smode[id] == 1 then -- upgrade help request
+				vai_mode[id]=1
+				vai_timer[id]=math.random(50,100)
+				vai_objectscan[id]=math.random(25,50)
+			elseif vai_smode[id] == 2 then -- use button/destroy breakable
+				vai_mode[id]=1
+				vai_timer[id]=math.random(50,100)
+				vai_entityscan[id]=math.random(25,50)
+			elseif vai_smode[id] == 3 then -- collect/pick up items
+				vai_mode[id]=1
+				vai_timer[id]=math.random(50,100)
+				vai_itemscan[id]=math.random(25,50)
+			else
+			else
+				vai_mode[id]=0
+			end
+		elseif result==0 then
+			vai_mode[id]=0
+		else
+			fai_walkaim(id)
+		end
+		
 	elseif vai_mode[id]==11	then
 		-- ############################################################ 11: GO TO BREAKABLE -> go to an Env_Breakable
 		if ai_goto(id,vai_destx[id],vai_desty[id])~=2 then

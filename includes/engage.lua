@@ -123,7 +123,7 @@ function fai_engage(id)
 			vai_timer[id]=math.random(25,100)
 			vai_smode[id]=math.random(0,360)
 			vai_mode[id]=4
-			if math.random(0,20) >= 15 then
+			if math.random(0,50) >= 48 then
 				ai_radio(id,9)
 			end
 		end

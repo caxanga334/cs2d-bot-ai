@@ -21,7 +21,7 @@ function fai_scanforobject(id)
 	if vai_objectscan[id]<=0 then -- timer is 0 and bot is not already using something.
 		vai_objectscan[id]=math.random(150,350)
 		
-		if vai_mode[id] ~= 21 and vai_mode[id]~=22 and vai_mode[id]~=23 and vai_mode[id]~=20 and vai_mode[id]~=24 and vai_mode[id]~=63 then
+		if vai_mode[id] ~= 21 and vai_mode[id]~=9 and vai_mode[id]~=22 and vai_mode[id]~=23 and vai_mode[id]~=20 and vai_mode[id]~=24 and vai_mode[id]~=63 then
 		
 			local objectlist=closeobjects(player(id,"x"),player(id,"y"),256) -- 8 tiles range
 			health = health + 20 -- health tolerance

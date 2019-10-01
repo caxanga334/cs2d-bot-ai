@@ -57,5 +57,49 @@ function fai_chat(source,message,teamonly)
 				ai_sayteam(mate, "roger that!")
 			end
 		end
+		
+		if string.find(message, "defend")~=nil or string.find(message, "camp")~=nil then
+			local mate=fai_randommate(source)
+			if mate~=0 then
+				vai_mode[mate]=9
+				vai_smode[mate]=0
+				vai_destx[mate]=player(source,"tilex")
+				vai_desty[mate]=player(source,"tiley")
+				ai_sayteam(mate, "roger that!")
+			end			
+		end
+		
+		if string.find(message, "help")~=nil and string.find(message, "upgrade")~=nil then
+			local mate=fai_randommate(source)
+			if mate~=0 then
+				vai_mode[mate]=9
+				vai_smode[mate]=1
+				vai_destx[mate]=player(source,"tilex")
+				vai_desty[mate]=player(source,"tiley")
+				ai_sayteam(mate, "roger that!")
+			end			
+		end
+		
+		if string.find(message, "use")~=nil or string.find(message, "destroy")~=nil then
+			local mate=fai_randommate(source)
+			if mate~=0 then
+				vai_mode[mate]=9
+				vai_smode[mate]=2
+				vai_destx[mate]=player(source,"tilex")
+				vai_desty[mate]=player(source,"tiley")
+				ai_sayteam(mate, "roger that!")
+			end			
+		end
+		
+		if string.find(message, "collect")~=nil or string.find(message, "pick")~=nil then
+			local mate=fai_randommate(source)
+			if mate~=0 then
+				vai_mode[mate]=9
+				vai_smode[mate]=3
+				vai_destx[mate]=player(source,"tilex")
+				vai_desty[mate]=player(source,"tiley")
+				ai_sayteam(mate, "roger that!")
+			end			
+		end
 	end
 end
