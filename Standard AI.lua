@@ -265,7 +265,6 @@ function ai_update_living(id)
 				vai_timer[id]=math.random(50,100)
 				vai_itemscan[id]=math.random(25,50)
 			else
-			else
 				vai_mode[id]=0
 			end
 		elseif result==0 then
