@@ -33,6 +33,7 @@ function fai_scanforobject(id)
 				local obx=object(obj,"tilex")
 				local oby=object(obj,"tiley")
 				local obmode=object(obj,"mode")
+				local builder=object(obj,"player")
 
 				if obteam==pteam then -- object must be from our team
 					if obtype==7 then -- dispenser
@@ -45,9 +46,16 @@ function fai_scanforobject(id)
 							fai_gotoobject(id, obx, oby, obtype, obj, 0)
 							break
 						end
-					elseif obtype==8 or obtype==11 or obtype==9 and canupgrade then -- turrets and supply
+					elseif obtype==8 or obtype==11 and canupgrade then -- turrets and supply
 						fai_gotoobject(id, obx, oby, obtype, obj, 1)
 						break
+					elseif obtype==9 and canupgrade then
+						if player(builder,"exists") then
+							if not player(builder,"bot") then -- do not upgrade supplies built by bots
+								fai_gotoobject(id, obx, oby, obtype, obj, 1)
+								break
+							end
+						end
 					end
 				end
 			end
