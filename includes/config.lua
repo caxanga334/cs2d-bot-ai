@@ -59,5 +59,6 @@ function fai_get_config(teamid,hintid)
 	end
 	
 	local r=math.random( #validhints )
-	return gai_configdata[r].x,gai_configdata[r].y,gai_configdata[r].data1,gai_configdata[r].data2
+	local index=validhints[r]
+	return gai_configdata[index].x,gai_configdata[index].y,gai_configdata[index].data1,gai_configdata[index].data2
 end
