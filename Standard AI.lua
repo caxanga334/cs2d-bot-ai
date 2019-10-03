@@ -30,6 +30,8 @@ dofile("bots/includes/build.lua")  		-- decides what the bot will build
 dofile("bots/includes/entityscan.lua")  -- scans and interacts with nearby entities
 dofile("bots/includes/objectscan.lua")  -- scans and interacts with nearby objects Note: This is for interacting with objects, not attacking then
 dofile("bots/includes/chat.lua")  		-- chat message handling
+dofile("bots/includes/hookers.lua")  	-- hook handling
+dofile("bots/includes/config.lua")  	-- config handling
 
 -- Setting Cache
 vai_set_gm=0							-- Game Mode Setting (equals "sv_gamemode", Cache)
@@ -37,13 +39,13 @@ vai_set_botskill=0						-- Bot Skill Setting (equals "bot_skill", Cache) -- 0: v
 vai_set_botweapons=0					-- Bot Weapons Setting (equals "bot_weapons", Cache)
 vai_set_debug=0							-- Debug Setting (equals "debugai", Cache)
 vai_set_disphealth=-1					-- health from dispenser
+vai_config_read=false					-- Did we read the config file for this map?
 fai_update_settings()
 
 -- Global Variables
 gai_tuitems = {} 						-- unreachable items T
-gai_tuitemstries = {} 
 gai_ctuitems = {} 						-- unreachable items CT
-gai_ctuitemstries = {}
+gai_configdata = {}						-- data from config file
 
 -- Per Player Variables
 vai_mode={}; vai_smode={}				-- current mode (state) and sub-mode (sub-state / parameter)
@@ -80,24 +82,15 @@ for i=1,32 do
 	vai_radioanswer[i]=0; vai_radioanswert[i]=0
 end
 
-addhook("mapchange","hai_onmapchange")
-function hai_onmapchange(newmap)
-	fai_cleartable(gai_tuitems)
-	fai_cleartable(gai_ctuitems)
-end
-
-addhook("startround","hai_onstartround")
-function hai_onstartround(mode)
-	fai_cleartable(gai_tuitems)
-	fai_cleartable(gai_ctuitems)
-end
-
 -- "ai_onspawn" - AI On Spawn Function
 -- This function is called by CS2D automatically after each spawn of a bot
 -- Parameter: id = player ID of the bot
 function ai_onspawn(id)
 	-- reload settings
 	fai_update_settings()
+	if not vai_config_read then
+		fai_read_config()
+	end
 	
 	-- reset variables for the spawned bot
 	vai_mode[id]=-1; vai_smode[id]=0

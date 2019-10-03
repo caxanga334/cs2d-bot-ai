@@ -2,7 +2,7 @@
 function fai_findbuildspot(id)
 	local team=player(id,"team")
 	local money=player(id,"money")
-	local r=math.random(1,3)
+	local r=math.random(1,4)
 	
 	-- decide where should we build
 	if team==1 then -- TERRORIST
@@ -65,6 +65,56 @@ function fai_findbuildspot(id)
 				fai_randommaptile(id) -- select a random tile around the map
 				vai_mode[id]=61
 				vai_smode[id]=3
+			end
+		elseif r==3 then -- MAP HINT
+			local r2=math.random(1,2)
+			if math.random(1,2) == 2 then -- TEAM HINT
+				if fai_config_available() then
+					local ht=math.random(1,3)
+					if fai_get_config(1,ht) ~= nil then
+						local h1,h2,h3,h4=fai_get_config(1,ht)
+						vai_destx[id]=h1+buildx
+						vai_desty[id]=h2+buildy
+						if h3 > 0 then
+							vai_mode[id]=63
+							vai_smode[id]=h3 -- specific building
+						else
+							vai_mode[id]=61
+							vai_smode[id]=2
+						end
+					else
+						fai_randommaptile(id) -- select a random tile around the map
+						vai_mode[id]=61
+						vai_smode[id]=3
+					end
+				else
+					fai_randommaptile(id) -- select a random tile around the map
+					vai_mode[id]=61
+					vai_smode[id]=3					
+				end
+			else
+				if fai_config_available() then
+					if fai_get_config(0,3) ~= nil then -- ALL TEAM INTERESTING BUILD SPOTS
+						local h1,h2,h3,h4=fai_get_config(0,3)
+						vai_destx[id]=h1+buildx
+						vai_desty[id]=h2+buildy
+						if h3 > 0 then
+							vai_mode[id]=63
+							vai_smode[id]=h3 -- specific building
+						else
+							vai_mode[id]=61
+							vai_smode[id]=2
+						end
+					else
+						fai_randommaptile(id) -- select a random tile around the map
+						vai_mode[id]=61
+						vai_smode[id]=3
+					end
+				else
+					fai_randommaptile(id) -- select a random tile around the map
+					vai_mode[id]=61
+					vai_smode[id]=3					
+				end			
 			end
 		else
 			fai_randommaptile(id) -- select a random tile around the map
@@ -130,6 +180,56 @@ function fai_findbuildspot(id)
 				fai_randommaptile(id) -- select a random tile around the map
 				vai_mode[id]=61
 				vai_smode[id]=3
+			end
+		elseif r==3 then -- MAP HINT
+			local r2=math.random(1,2)
+			if math.random(1,2) == 2 then -- TEAM HINT
+				if fai_config_available() then
+					local ht=math.random(1,3)
+					if fai_get_config(2,ht) ~= nil then
+						local h1,h2,h3,h4=fai_get_config(2,ht)
+						vai_destx[id]=h1+buildx
+						vai_desty[id]=h2+buildy
+						if h3 > 0 then
+							vai_mode[id]=63
+							vai_smode[id]=h3 -- specific building
+						else
+							vai_mode[id]=61
+							vai_smode[id]=2
+						end
+					else
+						fai_randommaptile(id) -- select a random tile around the map
+						vai_mode[id]=61
+						vai_smode[id]=3
+					end
+				else
+					fai_randommaptile(id) -- select a random tile around the map
+					vai_mode[id]=61
+					vai_smode[id]=3					
+				end
+			else
+				if fai_config_available() then
+					if fai_get_config(0,3) ~= nil then -- ALL TEAM INTERESTING BUILD SPOTS
+						local h1,h2,h3,h4=fai_get_config(0,3)
+						vai_destx[id]=h1+buildx
+						vai_desty[id]=h2+buildy
+						if h3 > 0 then
+							vai_mode[id]=63
+							vai_smode[id]=h3 -- specific building
+						else
+							vai_mode[id]=61
+							vai_smode[id]=2
+						end
+					else
+						fai_randommaptile(id) -- select a random tile around the map
+						vai_mode[id]=61
+						vai_smode[id]=3
+					end
+				else
+					fai_randommaptile(id) -- select a random tile around the map
+					vai_mode[id]=61
+					vai_smode[id]=3					
+				end			
 			end
 		else
 			fai_randommaptile(id) -- select a random tile around the map
