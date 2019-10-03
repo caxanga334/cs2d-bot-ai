@@ -2,7 +2,7 @@
 function fai_read_config()
 	local mapname=map("name")
 	local file = io.open("bots/config/"..mapname..".ini", "r")
-	vai_config_exists=true
+	vai_config_read=true
 	
 	if file == nil then
 		print("Config file bots/config/"..mapname..".ini not found")
