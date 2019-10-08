@@ -60,5 +60,8 @@ function fai_get_config(teamid,hintid)
 	
 	local r=math.random( #validhints )
 	local index=validhints[r]
+	if vai_set_debug == 1 then
+		print("fai_get_config returned: "..gai_configdata[index].x, gai_configdata[index].y, gai_configdata[index].data1, gai_configdata[index].data2)
+	end
 	return gai_configdata[index].x,gai_configdata[index].y,gai_configdata[index].data1,gai_configdata[index].data2
 end
