@@ -187,15 +187,16 @@ function fai_decide(id)
 						vai_mode[id]=2
 					end
 				elseif r==2 then -- point of interest from config file
+					local h1,h2,h3,h4=0
 					if math.random(0,1)==1 then -- team specific
-						local h1,h2,h3,h4=fai_get_config(1,0)
+						h1,h2,h3,h4=fai_get_config(1,0)
 						vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h3, h1, h2)
 					else -- all teams
-						local h1,h2,h3,h4=fai_get_config(0,0)
+						h1,h2,h3,h4=fai_get_config(0,0)
 						vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h3, h1, h2)					
 					end
 					
-					if vai_destx[id]~= nil then
+					if h1~= nil then
 						vai_mode[id]=2
 					else
 						fai_randommaptile(id) -- go to a random tile if config is nil
@@ -206,8 +207,8 @@ function fai_decide(id)
 					vai_mode[id]=2
 				elseif r==4 then -- goal route point
 					local h1,h2,h3,h4=fai_get_config(1,4)
-					vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h3, h1, h2)	
-					if vai_destx[id]~= nil then
+					if h1~= nil then
+						vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h3, h1, h2)	
 						vai_mode[id]=9; vai_smode[id]=10 -- bots will go to a bomb site
 					else
 						fai_randommaptile(id) -- go to a random tile if config is nil
@@ -236,15 +237,16 @@ function fai_decide(id)
 						vai_destx[id],vai_desty[id]=randomentity(5) -- info_bombspot
 						vai_mode[id]=2
 					elseif r==2 then -- point of interest from config file
+						local h1,h2,h3,h4=0
 						if math.random(0,1)==1 then -- team specific
-							local h1,h2,h3,h4=fai_get_config(2,0)
+							h1,h2,h3,h4=fai_get_config(2,0)
 							vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h3, h1, h2)
 						else -- all teams
-							local h1,h2,h3,h4=fai_get_config(0,0)
+							h1,h2,h3,h4=fai_get_config(0,0)
 							vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h3, h1, h2)					
 						end
 						
-						if vai_destx[id]~= nil then
+						if h1~= nil then
 							vai_mode[id]=2
 						else
 							fai_randommaptile(id) -- go to a random tile if config is nil
