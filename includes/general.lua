@@ -212,7 +212,7 @@ end
 
 -- sets the bot destx and desty to a random tile in a N radius of a specific origin
 -- the radius must always be negative
-function fai_gettilerandomradius(id, radius, x, y)
+function fai_gettilerandomradius(radius, x, y)
 	local radius2=math.abs(radius)
 	local x2=0
 	local y2=0

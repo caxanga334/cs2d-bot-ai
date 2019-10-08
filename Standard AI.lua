@@ -239,7 +239,7 @@ function ai_update_living(id)
 		end
 		
 	elseif vai_mode[id]==9 then
-		-- ############################################################ 9: GOTO ORDER -> go to destination ordered by a human player
+		-- ############################################################ 9: GOTO SPECIAL -> go to destination (special)
 		local result=ai_goto(id,vai_destx[id],vai_desty[id])
 		if result==1 then
 			if vai_smode[id] == 0  then -- camp/defend request
@@ -257,6 +257,13 @@ function ai_update_living(id)
 				vai_mode[id]=1
 				vai_timer[id]=math.random(50,100)
 				vai_itemscan[id]=math.random(25,50)
+			elseif vai_smode[id] == 10 then -- go to bomb site
+				vai_destx[id],vai_desty[id]=randomentity(5) -- info_bombspot
+				if player(id,"bomb") then
+					vai_mode[id]=51; vai_smode[id]=0; vai_timer[id]=0
+				else
+					vai_mode[id]=2; vai_smode[id]=0; vai_timer[id]=0
+				end
 			else
 				vai_mode[id]=0
 			end

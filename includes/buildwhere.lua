@@ -73,8 +73,7 @@ function fai_findbuildspot(id)
 					local ht=math.random(1,3)
 					if fai_get_config(1,ht) ~= nil then
 						local h1,h2,h3,h4=fai_get_config(1,ht)
-						vai_destx[id]=h1+buildx
-						vai_desty[id]=h2+buildy
+						vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h4, h1, h2)
 						if h3 > 0 then
 							vai_mode[id]=63
 							vai_smode[id]=h3 -- specific building
@@ -96,8 +95,7 @@ function fai_findbuildspot(id)
 				if fai_config_available() then
 					if fai_get_config(0,3) ~= nil then -- ALL TEAM INTERESTING BUILD SPOTS
 						local h1,h2,h3,h4=fai_get_config(0,3)
-						vai_destx[id]=h1+buildx
-						vai_desty[id]=h2+buildy
+						vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h4, h1, h2)
 						if h3 > 0 then
 							vai_mode[id]=63
 							vai_smode[id]=h3 -- specific building
@@ -188,8 +186,7 @@ function fai_findbuildspot(id)
 					local ht=math.random(1,3)
 					if fai_get_config(2,ht) ~= nil then
 						local h1,h2,h3,h4=fai_get_config(2,ht)
-						vai_destx[id]=h1+buildx
-						vai_desty[id]=h2+buildy
+						vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h4, h1, h2)
 						if h3 > 0 then
 							vai_mode[id]=63
 							vai_smode[id]=h3 -- specific building
@@ -211,8 +208,7 @@ function fai_findbuildspot(id)
 				if fai_config_available() then
 					if fai_get_config(0,3) ~= nil then -- ALL TEAM INTERESTING BUILD SPOTS
 						local h1,h2,h3,h4=fai_get_config(0,3)
-						vai_destx[id]=h1+buildx
-						vai_desty[id]=h2+buildy
+						vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h4, h1, h2)
 						if h3 > 0 then
 							vai_mode[id]=63
 							vai_smode[id]=h3 -- specific building
