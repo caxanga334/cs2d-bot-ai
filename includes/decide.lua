@@ -190,13 +190,12 @@ function fai_decide(id)
 					local h1,h2,h3,h4=0
 					if math.random(0,1)==1 then -- team specific
 						h1,h2,h3,h4=fai_get_config(1,0)
-						vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h3, h1, h2)
 					else -- all teams
-						h1,h2,h3,h4=fai_get_config(0,0)
-						vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h3, h1, h2)					
+						h1,h2,h3,h4=fai_get_config(0,0)	
 					end
 					
 					if h1~= nil then
+						vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h3, h1, h2)	
 						vai_mode[id]=2
 					else
 						fai_randommaptile(id) -- go to a random tile if config is nil
@@ -240,13 +239,12 @@ function fai_decide(id)
 						local h1,h2,h3,h4=0
 						if math.random(0,1)==1 then -- team specific
 							h1,h2,h3,h4=fai_get_config(2,0)
-							vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h3, h1, h2)
 						else -- all teams
 							h1,h2,h3,h4=fai_get_config(0,0)
-							vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h3, h1, h2)					
 						end
 						
 						if h1~= nil then
+							vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h3, h1, h2)	
 							vai_mode[id]=2
 						else
 							fai_randommaptile(id) -- go to a random tile if config is nil
