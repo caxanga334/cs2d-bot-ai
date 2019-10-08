@@ -66,7 +66,7 @@ function fai_engage(id)
 		end
 	end
 	
-	if vai_targetobj[id]>0 and vai_target[id]==0 then
+	if vai_targetobj[id]>0 then
 		if not object(vai_targetobj[id],"exists") then
 			-- If target player does not exist anymore -> reset
 			vai_targetobj[id]=0

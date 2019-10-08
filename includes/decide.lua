@@ -282,7 +282,7 @@ function fai_decide(id)
 						vai_mode[id]=2
 					end
 				else
-					local r=math.random(1,3)
+					local r=math.random(1,5)
 					if r==1 then
 						-- Get Flag!
 						vai_destx[id],vai_desty[id]=randomentity(15,0,1) -- info_ctf (CT flag)
@@ -290,8 +290,26 @@ function fai_decide(id)
 					elseif r==2 then
 						fai_randommaptile(id)
 						vai_mode[id]=2
+					elseif r==3 then
+						vai_destx[id],vai_desty[id]=randomentity(15,0,0) -- info_ctf (T flag)
+						vai_mode[id]=2
+					elseif r==4 then -- CONFIG: Point of Interest
+						local h1,h2,h3,h4=0
+						if math.random(0,1)==1 then -- team specific
+							h1,h2,h3,h4=fai_get_config(1,0)
+						else -- all teams
+							h1,h2,h3,h4=fai_get_config(0,0)	
+						end
+						
+						if h1~= nil then
+							vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h3, h1, h2)	
+							vai_mode[id]=2
+						else
+							fai_randommaptile(id) -- go to a random tile if config is nil
+							vai_mode[id]=2
+						end
 					else
-						-- Goto CT Spawn / Botnode
+						-- Goto T Spawn / Botnode
 						if map("botnodes")>0 and math.random(0,2)==1 then
 							vai_destx[id],vai_desty[id]=randomentity(19) -- info_botnode
 							vai_mode[id]=2
@@ -315,7 +333,7 @@ function fai_decide(id)
 						vai_mode[id]=2
 					end
 				else
-					local r=math.random(1,3)
+					local r=math.random(1,5)
 					if r==1 then
 						-- Get Flag!
 						vai_destx[id],vai_desty[id]=randomentity(15,0,0) -- info_ctf (T flag)
@@ -323,8 +341,26 @@ function fai_decide(id)
 					elseif r==2 then
 						fai_randommaptile(id)
 						vai_mode[id]=2
+					elseif r==3 then
+						vai_destx[id],vai_desty[id]=randomentity(15,0,1) -- info_ctf (CT flag)
+						vai_mode[id]=2
+					elseif r==4 then -- CONFIG: Point of Interest
+						local h1,h2,h3,h4=0
+						if math.random(0,1)==1 then -- team specific
+							h1,h2,h3,h4=fai_get_config(2,0)
+						else -- all teams
+							h1,h2,h3,h4=fai_get_config(0,0)	
+						end
+						
+						if h1~= nil then
+							vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h3, h1, h2)	
+							vai_mode[id]=2
+						else
+							fai_randommaptile(id) -- go to a random tile if config is nil
+							vai_mode[id]=2
+						end
 					else
-						-- Goto T Spawn / Botnode
+						-- Goto CT Spawn / Botnode
 						if map("botnodes")>0 and math.random(0,2)==1 then
 							vai_destx[id],vai_desty[id]=randomentity(19) -- info_botnode
 							vai_mode[id]=2
@@ -360,7 +396,7 @@ function fai_decide(id)
 			-- ############################################################ Maps without special goal/mission
 			if team==1 then
 				------------------- Terrorists
-				local r=math.random(1,3)
+				local r=math.random(1,4)
 				if r==2 then
 					-- Goto CT Spawn / Botnode
 					if map("botnodes")>0 and math.random(0,2)==1 then
@@ -373,6 +409,21 @@ function fai_decide(id)
 				elseif r==3 then
 					fai_randommaptile(id)
 					vai_mode[id]=2
+				elseif r==4 then
+					local h1,h2,h3,h4=0
+					if math.random(0,1)==1 then -- team specific
+						h1,h2,h3,h4=fai_get_config(1,0)
+					else -- all teams
+						h1,h2,h3,h4=fai_get_config(0,0)	
+					end
+					
+					if h1~= nil then
+						vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h3, h1, h2)	
+						vai_mode[id]=2
+					else
+						fai_randommaptile(id) -- go to a random tile if config is nil
+						vai_mode[id]=2
+					end
 				else
 					-- Goto T Spawn
 					vai_destx[id],vai_desty[id]=randomentity(0) -- info_t
@@ -380,7 +431,7 @@ function fai_decide(id)
 				end
 			else
 				------------------- Counter-Terrorists
-				local r=math.random(1,3)
+				local r=math.random(1,4)
 				if r==2 then
 					-- Goto T Spawn / Botnode
 					if map("botnodes")>0 and math.random(0,2)==1 then
@@ -393,6 +444,21 @@ function fai_decide(id)
 				elseif r==3 then
 					fai_randommaptile(id)
 					vai_mode[id]=2
+				elseif r==4 then
+					local h1,h2,h3,h4=0
+					if math.random(0,1)==1 then -- team specific
+						h1,h2,h3,h4=fai_get_config(2,0)
+					else -- all teams
+						h1,h2,h3,h4=fai_get_config(0,0)	
+					end
+					
+					if h1~= nil then
+						vai_destx[id],vai_desty[id]=fai_gettilerandomradius(h3, h1, h2)	
+						vai_mode[id]=2
+					else
+						fai_randommaptile(id) -- go to a random tile if config is nil
+						vai_mode[id]=2
+					end
 				else
 					-- Goto CT Spawn
 					vai_destx[id],vai_desty[id]=randomentity(1) -- info_ct
@@ -415,6 +481,10 @@ function fai_decide(id)
 				vai_mode[id]=60
 			end
 		end
+	end
+	
+	if math.random(0,100) >= 90 then
+		ai_spray(id)
 	end
 	
 	-- Check Decision Results
