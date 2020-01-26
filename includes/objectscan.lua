@@ -163,6 +163,14 @@ function fai_upgradeobject(id,oid)
 	if player(id, "money") < 6000 then
 		vai_mode[id]=0
 	end
+	
+	local weaponstable=playerweapons(id)
+	if fai_contains(weaponstable,74) == false then
+		vai_mode[id]=0
+		if vai_set_debug==1 then
+			print("fai_upgradeobject: bot does not contains a wrench")
+		end
+	end
 
 	vai_destx[id],vai_desty[id]=fai_findbpab2(id,oid)
 	
