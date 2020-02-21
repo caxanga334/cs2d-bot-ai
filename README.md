@@ -1,4 +1,4 @@
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=plastic)](http://makeapullrequest.com) 
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=plastic)](http://makeapullrequest.com)
 ![GitHub issues](https://img.shields.io/github/issues/caxanga334/cs2d-bot-ai?style=plastic)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/caxanga334/cs2d-bot-ai?style=plastic)
 
@@ -14,3 +14,6 @@ This is a modified version of CS2D's BOT AI.
 * Use buttons (trigger_use)
 * Destroy breakables (env_brakable)
 * Weapon Tier System (allow bots to pick up better weapons)
+
+# Contact
+* [Discord](https://discord.gg/cSdu8Uf)
