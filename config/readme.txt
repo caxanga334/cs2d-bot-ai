@@ -42,3 +42,16 @@ TIP: Use this to make bots take alternative routes to bomb sites, hostages, esca
 Not all hint types will use datas
 
 Radius data must always be negative
+
+Building type is the object internal type ID
+	Barricade || 1
+	Barbed Wire || 2
+	Wall 1 || 3
+	Wall 2 || 4
+	Wall 3 || 5
+	Gate Field || 6
+	Dispenser || 7
+	Turret || 8
+	Supply || 9
+	Teleporter Entrance || 13
+	Teleporter Exit || 14

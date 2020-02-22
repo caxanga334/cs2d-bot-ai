@@ -3,7 +3,7 @@ function fai_findbuildspot(id)
 	local team=player(id,"team")
 	local money=player(id,"money")
 	local r=math.random(1,4)
-	
+
 	-- decide where should we build
 	if team==1 then -- TERRORIST
 	-- build1: map objective | build2: bot node if available | build3: random tile
@@ -89,7 +89,7 @@ function fai_findbuildspot(id)
 				else
 					fai_randommaptile(id) -- select a random tile around the map
 					vai_mode[id]=61
-					vai_smode[id]=3					
+					vai_smode[id]=3
 				end
 			else
 				if fai_config_available() then
@@ -111,8 +111,8 @@ function fai_findbuildspot(id)
 				else
 					fai_randommaptile(id) -- select a random tile around the map
 					vai_mode[id]=61
-					vai_smode[id]=3					
-				end			
+					vai_smode[id]=3
+				end
 			end
 		else
 			fai_randommaptile(id) -- select a random tile around the map
@@ -202,7 +202,7 @@ function fai_findbuildspot(id)
 				else
 					fai_randommaptile(id) -- select a random tile around the map
 					vai_mode[id]=61
-					vai_smode[id]=3					
+					vai_smode[id]=3
 				end
 			else
 				if fai_config_available() then
@@ -224,8 +224,8 @@ function fai_findbuildspot(id)
 				else
 					fai_randommaptile(id) -- select a random tile around the map
 					vai_mode[id]=61
-					vai_smode[id]=3					
-				end			
+					vai_smode[id]=3
+				end
 			end
 		else
 			fai_randommaptile(id) -- select a random tile around the map
@@ -233,7 +233,7 @@ function fai_findbuildspot(id)
 			vai_smode[id]=3
 		end
 	end
-	
+
 	if vai_set_debug==1 then
 		if r==1 then
 			print("BOT build goal: Point of Interest")
@@ -243,8 +243,13 @@ function fai_findbuildspot(id)
 			print("BOT build goal: Random")
 		end
 	end
-	
+
 	-- FAIL SAFE
+	if vai_destx[id] == nil then -- make sure we have a valid number
+		vai_mode[id]=0
+		vai_smode[id]=0
+	end
+	-- make sure our destination is a walkable tile
 	if not tile(vai_destx[id],vai_desty[id], "walkable") then
 		vai_mode[id]=0
 		vai_smode[id]=0
