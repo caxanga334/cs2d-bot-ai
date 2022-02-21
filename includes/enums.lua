@@ -1,0 +1,11 @@
+---@class BOT_PRIORITY
+BOT_PRIORITY = {}
+BOT_PRIORITY.none = 0
+BOT_PRIORITY.verylow = 1
+BOT_PRIORITY.low = 2
+BOT_PRIORITY.medium = 3
+BOT_PRIORITY.high = 4
+BOT_PRIORITY.veryhigh = 5
+BOT_PRIORITY.combat = 6
+BOT_PRIORITY.critical = 7
+
