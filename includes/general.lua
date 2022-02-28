@@ -188,6 +188,57 @@ function fai_vector_normalized(x, y)
 	return normalx, normaly
 end
 
+---Converts a tile position to pixel position
+---@param tilex number #Tile X position
+---@param tiley number #Tile Y position
+---@param centered boolean #True if the converted position should be in the center of the tile
+---@return number px#X position in pixels
+---@return number py#Y position in pixels
+function fai_tile2pixels(tilex, tiley, centered)
+	local size = map("tilesize")
+	local half = size/2
+
+	local px = size * tilex
+	local py = size * tiley
+
+	if centered == true then
+		px = px + half
+		py = py + half
+	end
+
+	return px, py
+end
+
+---Converts a pixel position to tile position
+---@param px number #Pixel X position
+---@param py number #Pixel Y position
+---@return number tilex#Tile X position
+---@return number tiley#Tile Y position
+function fai_pixels2tile(px, py)
+	local size = map("tilesize")
+
+	local tilex = math.floor(px / size)
+	local tiley = math.floor(py / size)
+
+	return tilex, tiley
+end
+
+---Checks if the given (pixels) position is inside the bot's vision range
+---@param id number
+---@param x2 number
+---@param y2 number
+---@return boolean
+function fai_invisionrangepixels(id, x2, y2)
+	local x1 = player(id, "x")
+	local y1 = player(id, "y")
+
+	if math.abs(x1 - x2) <= BOT_DISTANCES.maxvisionpixelsx and math.abs(y1 - y2) <= BOT_DISTANCES.maxvisionpixelsy then
+		return true
+	end
+
+	return false
+end
+
 --- makes a deep copy of a given table (the 2nd param is optional and for internal use)
 ---
 --- circular dependencies are correctly copied.

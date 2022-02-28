@@ -59,6 +59,12 @@ end
 function fai_setmainaction(id, mainaction)
 	vai_action[id] = mainaction
 	mainaction.OnStart(id)
+
+	if mainaction.Parallel ~= nil then
+		if mainaction.Parallel.OnStart ~= nil then
+			mainaction.Parallel.OnStart(id)
+		end
+	end
 end
 
 ---Marks the top action as done
@@ -113,9 +119,9 @@ end
 ---The current action is set as a child action of the new action.
 ---@param id number
 ---@param newaction BotActionClass
-function fai_SuspendFor(id, newaction)
+function fai_SuspendFor(id, newaction, reason)
 	if vai_set_debug then
-		print("BOT "..player(id, "name").." suspended action "..vai_action[id].Name.." for "..newaction.Name)
+		print("BOT "..player(id, "name").." suspended action "..vai_action[id].Name.." for "..newaction.Name..". Reason: "..reason)
 	end
 
 	if vai_action[id].OnSuspend ~= nil then
@@ -148,9 +154,9 @@ end
 ---Note that this does not set the current action as a child action!
 ---@param id number
 ---@param newaction BotActionClass
-function fai_ChangeTo(id, newaction)
+function fai_ChangeTo(id, newaction, reason)
 	if vai_set_debug then
-		print("BOT "..player(id, "name").." changed action "..vai_action[id].Name.." for "..newaction.Name)
+		print("BOT "..player(id, "name").." changed action "..vai_action[id].Name.." for "..newaction.Name..". Reason: "..reason)
 	end
 
 	if vai_action[id].OnEnd ~= nil then
@@ -173,24 +179,28 @@ function fai_ChangeTo(id, newaction)
 		end
 	end
 
+	if vai_action[id].Child ~= nil then
+		newaction.Child = vai_action[id].Child
+	end
+
 	vai_action[id] = newaction
 	return nil
 end
 
 ---Tries to suspend the current action for another.
 ---
----The action will only change if the new action's **priority** is equal or higher than the current action.
+---The action will only change if the new action's **priority** is higher than the current action.
 ---
 ---The current action is set as a child action of the new action.
 ---@param id number
 ---@param newaction BotActionClass
-function fai_TrySuspendFor(id, newaction)
-	if newaction.Priority < vai_action[id].Priority then
+function fai_TrySuspendFor(id, newaction, reason)
+	if newaction.Priority <= vai_action[id].Priority  then
 		return false
 	end
 
 	if vai_set_debug then
-		print("BOT "..player(id, "name").." suspended action "..vai_action[id].Name.." for "..newaction.Name)
+		print("BOT "..player(id, "name").." suspended action "..vai_action[id].Name.." for "..newaction.Name..". Reason: "..reason)
 	end
 
 	if vai_action[id].OnSuspend ~= nil then
@@ -220,19 +230,19 @@ end
 
 ---Tries to change the current action to the new action.
 ---
----The action will only change if the new action's **priority** is equal or higher than the current action.
+---The action will only change if the new action's **priority** is higher than the current action.
 ---
 ---Note that this does not set the current action as a child action!
 ---@param id number
 ---@param newaction BotActionClass
 ---@return boolean
-function fai_TryChangeTo(id, newaction)
-	if newaction.Priority < vai_action[id].Priority then
+function fai_TryChangeTo(id, newaction, reason)
+	if newaction.Priority <= vai_action[id].Priority then
 		return false
 	end
 
 	if vai_set_debug then
-		print("BOT "..player(id, "name").." changed action "..vai_action[id].Name.." for "..newaction.Name)
+		print("BOT "..player(id, "name").." changed action "..vai_action[id].Name.." for "..newaction.Name..". Reason: "..reason)
 	end
 
 	if vai_action[id].OnEnd ~= nil then
@@ -253,6 +263,10 @@ function fai_TryChangeTo(id, newaction)
 		if newaction.Parallel.OnStart ~= nil then
 			newaction.Parallel.OnStart(id)
 		end
+	end
+
+	if vai_action[id].Child ~= nil then
+		newaction.Child = vai_action[id].Child
 	end
 
 	vai_action[id] = newaction

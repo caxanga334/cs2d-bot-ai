@@ -22,7 +22,14 @@ end
 
 function roamaction_update(id)
 	local result = ai_goto(id, vai_goalx[id], vai_goaly[id])
-	fai_walkaim(id)
+
+	if vai_freeaim[id] then
+		fai_walkaim(id)
+	end
+
+	if vai_hastarget[id] and vai_targetplayer[id] > 0 then
+		fai_TrySuspendFor(id, attackaction_init(), "Attacking enemies!")
+	end
 
 	if result ~= 2 then
 		fai_ActionDone(id, "Done roaming")

@@ -14,9 +14,11 @@
 dofile("bots/includes/settings.lua")				-- track settings
 dofile("bots/includes/enums.lua")					-- global enums
 dofile("bots/includes/general.lua")					-- general helper functions
+dofile("bots/includes/engage.lua")					-- bot find and engage enemies
 dofile("bots/includes/corebehavior.lua")			-- core behavior file
 dofile("bots/includes/behavior/main.lua")			-- main behavior file
 dofile("bots/includes/behavior/roam.lua")			-- roam behavior file
+dofile("bots/includes/behavior/combat.lua")			-- combat behavior file
 
 -- Setting Cache
 vai_set_gm=0							-- Game Mode Setting (equals "sv_gamemode", Cache)
@@ -29,19 +31,25 @@ fai_update_settings()
 vai_goalx = {}; vai_goaly = {} 			-- Bot move goal position
 vai_aimx={}; vai_aimy={}				-- aim at x|y
 vai_px={}; vai_py={}					-- previous x|y
+vai_lkpx={}; vai_lkpy={}				-- last known position x|y
 vai_targetplayer = {}					-- Bot target player
 vai_targetobject = {}					-- Bot target object
 vai_hastarget = {}						-- Has target?
+vai_freeaim = {}						-- Bot aim is free (ie: no target)
+vai_playerscan = {}						-- Player targetting scan timer
 ---@type BotActionClass
 vai_action = {} -- Table containing Actions
 for i=1,32 do
 	vai_goalx[i] = 0; vai_goaly[i] = 0
 	vai_aimx[i]=0; vai_aimy[i]=0
 	vai_px[i]=0; vai_px[i]=0
+	vai_lkpx[i]=0; vai_lkpy[i]=0;
 	vai_action[i] = nil
 	vai_targetplayer[i] = -1
 	vai_targetobject[i] = -1
 	vai_hastarget[i] = false
+	vai_freeaim[i] = true
+	vai_playerscan[i] = -1
 end
 
 -- "ai_onspawn" - AI On Spawn Function
@@ -50,6 +58,10 @@ end
 function ai_onspawn(id)
 	fai_update_settings()
 	vai_action[id] = nil
+	vai_targetplayer[id] = -1
+	vai_targetobject[id] = -1
+	vai_hastarget[id] = false
+	vai_playerscan[id] = -1
 	fai_setmainaction(id, mainaction_init())
 end
 
@@ -57,7 +69,10 @@ end
 -- This function is called by CS2D automatically for each *LIVING* bot each frame
 -- Parameter: id = player ID of the bot
 function ai_update_living(id)
-	
+
+	-- Execute the combat system
+	fai_scanforplayers(id) -- Scan for enemy players
+
 	-- Execute the action system
 	fai_runbehavior(id)
 
@@ -72,7 +87,11 @@ function ai_update_living(id)
 		elseif vai_action[id].Parallel ~= nil and vai_action[id].Child == nil then
 			ai_debug(id, ""..vai_action[id].Name.."("..vai_action[id].Parallel.Name..")")
 		elseif vai_action[id].Parallel == nil and vai_action[id].Child ~= nil then
-			ai_debug(id, ""..vai_action[id].Name.."<<"..vai_action[id].Child.Name)
+			if vai_action[id].Child.Parallel ~= nil then
+				ai_debug(id, ""..vai_action[id].Name.."<<"..vai_action[id].Child.Name.."("..vai_action[id].Child.Parallel.Name..")")
+			else
+				ai_debug(id, ""..vai_action[id].Name.."<<"..vai_action[id].Child.Name)
+			end
 		else
 			ai_debug(id, ""..vai_action[id].Name)
 		end
